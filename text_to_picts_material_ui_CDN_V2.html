@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Text to pictogram</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no" />
+  <script src="https://unpkg.com/react@latest/umd/react.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@latest/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@material-ui/core@latest/umd/material-ui.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/babel-standalone@latest/babel.min.js" crossorigin="anonymous"></script>
+  <!-- Fonts to support Material Design -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+  <!-- Icons to support Material Design -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+
+  <script type="text/javascript" src="data.json"></script>
+
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const {
+    colors,
+    CssBaseline,
+    ThemeProvider,
+    Typography,
+    Container,
+    makeStyles,
+    createMuiTheme,
+    createStyles,
+    Theme,
+    Box,
+    SvgIcon,
+    Link,
+    Grid,
+    Paper,
+    AccessAlarm,
+    ThreeDRotation,
+    Icon,
+    Button,
+    GridList ,
+    GridListTile,
+    tileData,
+    sizing,
+    Input,
+    InputBase,
+    Divider,
+    TextField,
+    IconButton,
+    InputAdornment,
+    FormControl,
+    InputLabel,
+    AccountCircle,
+    Fab,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    useMediaQuery,
+    Tooltip,
+    AddIcon,
+    Menu,
+    MenuItem,
+  } = MaterialUI;
+
+  // Create a theme instance.
+  const theme = createMuiTheme({
+    palette: {
+      primary: {
+        main: '#556cd6',
+      },
+      secondary: {
+        main: '#19857b',
+      },
+      error: {
+        main: colors.red.A400,
+      },
+      background: {
+        default: '#FFFFFF',
+      },
+    },
+  });
+
+  const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    container: {
+     display: 'flex',
+     flexWrap: 'wrap',
+   },
+   textField: {
+     marginLeft: theme.spacing(1),
+     marginRight: theme.spacing(1),
+     width: 500,
+   },
+   fab: {
+    margin: theme.spacing(2),
+  },
+  absolute: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(3),
+  },
+ }),
+);
+
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  // textToPicture
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+  function TextToPicture(props) {
+
+    const classes = props.classes;
+    const text = props.text;
+    const synonymArray = props.synonymArray;
+    const direction = props.direction; //column | row
+
+    var myText = text;
+    var myTextImage = myText;
+    var isPluriel = false;
+
+    if (myText.endsWith("]")) {
+      var myNewTextArrray = myText.split("[");
+      myText = myNewTextArrray[0];
+      myTextImage = myNewTextArrray[1];
+      myTextImage = myTextImage.slice(0, -1);
+      if (myTextImage.endsWith("X2")) {
+        isPluriel = true;
+        myTextImage = myTextImage.slice(0, -2);
+      }
+    }
+
+    myText = myText.replace(/_/g," ");
+
+    if (synonymArray.hasOwnProperty(myTextImage)) {
+      myTextImage = synonymArray[myTextImage];
+    }
+
+    return (
+
+      <Grid
+    container
+    direction={direction}
+    justify="center"
+    alignItems="center"
+  >
+     <Box width={150} p={1} my={0.5} alignItems="center">
+       <img src={"myImages\\"+myTextImage+".jpg"} height="100px"
+       onError={(e)=>{e.target.src="myImages\\none.jpg";}}/>
+       {isPluriel? (
+         <img src={"myImages\\"+myTextImage+".jpg"} height="100px"
+         onError={(e)=>{e.target.src="myImages\\none.jpg";}}/>
+       ):(
+         <div></div>
+       )
+       }
+     </Box>
+     <Box>
+       <Typography variant="h4" gutterBottom>
+        {myText}
+      </Typography>
+     </Box>
+    </Grid>
+
+    )
+  };
+
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  // DisplayResult
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+  function DisplayResult(props) {
+
+    const classes = props.classes;
+    const synonymArray = props.synonymArray;
+    const mySentence = props.mySentence;
+
+    var myWordArray = mySentence.split(" ");
+
+    var listWords = myWordArray.map((work,index) =>
+    <GridListTile key={index} style={{ width: 'auto' }}>
+          <Paper className={classes.paper}>
+              <TextToPicture direction={"column"} synonymArray={synonymArray}
+                classes={classes} text={work}/>
+          </Paper>
+    </GridListTile>
+    );
+
+    return (
+
+              <GridList className={classes.gridListHorizon} cols={7}>
+                {listWords}
+              </GridList>
+
+    );
+
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  // MyMenu
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+  function MyMenu(props) {
+
+    const classes = props.classes;
+
+    const [anchorEl, setAnchorEl] = React.useState(0);
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+
+    return (
+      <div>
+
+      <Tooltip title="menu">
+        <IconButton aria-label="menu"  onClick={handleClick}>
+          <Icon>menu</Icon>
+        </IconButton>
+      </Tooltip>
+
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <MenuItem onClick={handleClose}>
+            <Link href="GAME_react_material_ui_CDN_V2.html">
+              Game - Remettre l'histoire dans l'ordre
+            </Link>
+          </MenuItem>
+          <MenuItem onClick={handleClose}>
+            <Link href="text_to_picts_material_ui_CDN_V2.html">
+              Ecrit une histoire
+            </Link>
+          </MenuItem>
+        </Menu>
+      </div>
+    );
+
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
+  // Game
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+  class Game extends React.Component {
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Game::constructor
+    ////////////////////////////////////////////////////////////////////////////
+    constructor(props) {
+      super(props);
+      this.state = {
+        textValue: "?",
+        synonymArray: {}
+      }
+
+      this.handleTextValueChange = this.handleTextValueChange.bind(this);
+
+      // load synonym
+      var mydata = JSON.parse(data);
+      console.log("mydata well loade:",mydata);
+
+      for (var i = 0; i < mydata.length; i++) {
+        var myImageData = mydata[i];
+          if (myImageData.hasOwnProperty("synonym")) {
+          var mySyn = myImageData.synonym.split(":");
+
+          for (var j = 0; j < mySyn.length; j++) {
+            if (myImageData.hasOwnProperty("imageName")) {
+            this.state.synonymArray[mySyn[j]] = myImageData.imageName;
+            }
+          }
+        }
+      }
+      console.log("this.state.synonymArray:",this.state.synonymArray);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Game::handleNameChange
+    ////////////////////////////////////////////////////////////////////////////
+
+    handleTextValueChange = (event) => {
+      console.log("event: ",event);
+      this.setState({ textValue: event.target.value });
+    };
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Game::handleAddTextValue
+    ////////////////////////////////////////////////////////////////////////////
+
+    handleAddTextValue = (event,newText) => {
+      console.log("event: ",event);
+      this.setState({ textValue: this.state.textValue+" "+newText });
+    };
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Game::render
+    ////////////////////////////////////////////////////////////////////////////
+    render() {
+
+      const { classes } = this.props;
+
+      return (
+
+        <Grid container direction="row" justify="space-around" alignItems="stretch" className={classes.root}>
+
+        <Grid item xs={1}>
+          <MyMenu classes={classes}/>
+        </Grid>
+        <Grid item container justify="center" xs={10}>
+          <Fab variant="extended" color="primary" aria-label="like" className={classes.fab}>
+            <Icon>accessibility_new</Icon>
+            &nbsp;
+            Ecris ton histoire
+            &nbsp;&nbsp;&nbsp;
+            <Icon>keyboard</Icon><Icon>arrow_forward</Icon><Icon>view_column</Icon>
+          </Fab>
+        </Grid>
+
+        <Grid item xs={1}>
+        </Grid>
+
+          <Grid item xs={12}>
+            <br/>
+            <br/>
+            <br/>
+          </Grid>
+
+
+          <Grid item xs={12} justify="center" container>
+
+                 <TextField
+                   id="outlined-basic"
+                   className={classes.textField}
+                   label="Mon texte"
+                   margin="normal"
+                   variant="outlined"
+                   value={this.state.textValue}
+                   onChange={(e)=> this.handleTextValueChange(e)}
+                 />
+
+          </Grid>
+
+
+          <Grid item xs={12} justify="center" container>
+            <div>
+            <Icon>warning</Icon><b>Actuces:</b><br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>- Synomyne</b>: mettre le nom du pictograme entre [ ] ,
+            cliquer sur l&#39;example: <Link  onClick={(e)=> this.handleAddTextValue(e,"prof[maitresse]")}>prof[maitresse]</Link><br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>- Grouper</b>: Utiliser _ et l&#39;astuce synonyme,
+            cliquer sur l&#39;example: <Link  onClick={(e)=> this.handleAddTextValue(e,"Le_prof_de_theatre[maitresse]")}>Le_prof_de_theatre[maitresse]</Link><br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>- Pluriel</b>: mettre le nom du pictograme entre [ ] et ajouter X2,
+            cliquer sur l&#39;example:<Link onClick={(e)=> this.handleAddTextValue(e,"cubes[cubeX2]")}>cubes[cubeX2]</Link>
+            <br/>
+            <br/>
+            <br/>
+            </div>
+          </Grid>
+
+          <Grid item xs={12}>
+		  &nbsp;
+          <DisplayResult synonymArray={this.state.synonymArray} classes={classes}
+           mySentence={this.state.textValue} />
+          </Grid>
+
+        </Grid>
+      );
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  // APP
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+  function App() {
+
+    const classes = useStyles();
+
+    return (
+      <Game classes={classes}/>
+    );
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  // render
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+  ReactDOM.render(
+    <ThemeProvider theme={theme}>
+    {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+    <CssBaseline />
+    <App />
+    </ThemeProvider>,
+    document.querySelector('#root'),
+  );
+  </script>
+</body>
+
+</html>
