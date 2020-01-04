@@ -1,4 +1,4 @@
-data = 
+synonyms =
 '['
 +'{"imageName":"avoir","group":"verbe","synonym":"a"},'
 +'{"imageName":"dormir","group":"verbe","synonym":"dort"},'
@@ -8,4 +8,11 @@ data =
 +'{"imageName":"maitresse","group":"person","synonym":"maitre:prof:instituteur:institutrice"},'
 +'{"imageName":"ouvrir","group":"verbe","synonym":"ouvre"},'
 +'{"imageName":"rentre","group":"verb","synonym":"va:aller:vais:allons:allé"}'
++']';
+
+existingBook =
+'['
+  +'{"url":"livres/petit_loup_va_a_lecole/livre.json","name":"Petit loup va a l\'ecole"}',
+  +'{"url":"livres/Petit_loup_a_peur_du_noir/livre.json","name":"Petit loup a peur du noir"}',
+  +'{"url":"livres/c_est_quoi_le_gout_de_la_lune/livre.json","name":"C\'est quoi le gout de la lune"}'
 +']';
