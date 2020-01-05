@@ -120,10 +120,10 @@
     const direction = props.direction; //column | row
 
     var myText = text;
-    var myTextImage = myText;
+    var myTextImage = text.toLowerCase();
     var isPluriel = false;
 
-    if (myText.endsWith("]")) {
+    if (myText.includes("[") && myText.endsWith("]")) {
       var myNewTextArrray = myText.split("[");
       myText = myNewTextArrray[0];
       myTextImage = myNewTextArrray[1];
