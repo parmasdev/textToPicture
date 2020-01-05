@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Remettre l'histoire dans l'ordre!</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no" />
+  <script src="https://unpkg.com/react@latest/umd/react.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@latest/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@material-ui/core@latest/umd/material-ui.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/babel-standalone@latest/babel.min.js" crossorigin="anonymous"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+  <!-- Fonts to support Material Design -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+  <!-- Icons to support Material Design -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+
+  <!-- standalone (20.3kb) -->
+  <script src="https://unpkg.com/github-api/dist/GitHub.bundle.min.js"></script>
+
+  <script type="text/babel">
+
+    console.log("Start");
+
+    // unauthenticated client
+    const gh = new GitHub();
+    let gist = gh.getGist(); // not a gist yet
+    gist.create({
+       public: true,
+       description: 'My first gist',
+       files: {
+          "file1.txt": {
+             content: "Aren't gists great!"
+          }
+       }
+    }).then(function({data}) {
+       // Promises!
+       let createdGist = data;
+       return gist.read();
+    }).then(function({data}) {
+       let retrievedGist = data;
+       // do interesting things
+    });
+
+  </script>
+
+
+</head>
+
+<body>
+
+</body>
+</html>
