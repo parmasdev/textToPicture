@@ -16,6 +16,8 @@
   <script type="text/babel" src="js/LoadOrUploadFiles.js" crossorigin="anonymous"></script>
   <script type="text/babel" src="js/TextToPicture.js" crossorigin="anonymous"></script>
 
+  <script type="text/babel" src="js/MyMenu.js" crossorigin="anonymous"></script>
+
   <!-- Fonts to support Material Design -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
   <!-- Icons to support Material Design -->
@@ -66,6 +68,9 @@
     Select,
     MenuItem,
     Switch,
+    Tooltip,
+    IconButton,
+    Menu,
   } = MaterialUI;
 
   // Create a theme instance.
@@ -781,7 +786,11 @@
 		isLastPage={this.state.currentPage+1==this.state.pagesDataJson.length}
         />
 
-          <Grid item container justify="center" xs={12}>
+        <Grid item xs={1}>
+          <MyMenu classes={classes}/>
+        </Grid>
+
+        <Grid item container justify="center" xs={10}>
             <Fab variant="extended" color="primary" aria-label="like" className={classes.fab}>
               <Icon>accessibility_new</Icon>
               &nbsp;
@@ -789,6 +798,10 @@
               &nbsp;&nbsp;&nbsp;
               <Icon>insert_emoticon</Icon><Icon>chat</Icon>
             </Fab>
+          </Grid>
+
+          <Grid item xs={1}>
+            &nbps;
           </Grid>
 
           <Grid item container justify="center" xs={12}>

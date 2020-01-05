@@ -14,6 +14,8 @@
   <!-- Icons to support Material Design -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
 
+  <script type="text/babel" src="js/MyMenu.js" crossorigin="anonymous"></script>
+
   <script type="text/javascript" src="data.json"></script>
 
 </head>
@@ -198,55 +200,6 @@
 
   }
 
-  ////////////////////////////////////////////////////////////////////////////////////////////
-  // MyMenu
-  ////////////////////////////////////////////////////////////////////////////////////////////
-
-  function MyMenu(props) {
-
-    const classes = props.classes;
-
-    const [anchorEl, setAnchorEl] = React.useState(0);
-
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-      setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-      setAnchorEl(null);
-    };
-
-    return (
-      <div>
-
-      <Tooltip title="menu">
-        <IconButton aria-label="menu"  onClick={handleClick}>
-          <Icon>menu</Icon>
-        </IconButton>
-      </Tooltip>
-
-        <Menu
-          id="simple-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-        >
-          <MenuItem onClick={handleClose}>
-            <Link href="GAME_react_material_ui_CDN_V2.html">
-              Game - Remettre l'histoire dans l'ordre
-            </Link>
-          </MenuItem>
-          <MenuItem onClick={handleClose}>
-            <Link href="text_to_picts_material_ui_CDN_V2.html">
-              Ecrit une histoire
-            </Link>
-          </MenuItem>
-        </Menu>
-      </div>
-    );
-
-  }
 
   ///////////////////////////////////////////////////////////////////////////////////////////
   // Game

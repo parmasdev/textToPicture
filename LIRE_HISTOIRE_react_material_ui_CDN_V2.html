@@ -17,6 +17,8 @@
   <script type="text/babel" src="js/LoadOrUploadFiles.js" crossorigin="anonymous"></script>
   <script type="text/babel" src="js/TextToPicture.js" crossorigin="anonymous"></script>
 
+  <script type="text/babel" src="js/MyMenu.js" crossorigin="anonymous"></script>
+
   <!-- Fonts to support Material Design -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
   <!-- Icons to support Material Design -->
@@ -69,6 +71,8 @@
     Select,
     MenuItem,
     Switch,
+    IconButton,
+    Menu,
   } = MaterialUI;
 
   // Create a theme instance.
@@ -582,7 +586,7 @@
     <Grid container direction="row" justify="space-around" alignItems="stretch" className={classes.root}>
 
 		<Grid item container justify="center" xs={1}>
-		&nbsp;
+      <MyMenu classes={classes}/>
 		</Grid>
 		<Grid item container justify="center" xs={10}>
             <Fab variant="extended" color="primary" aria-label="like" className={classes.fab}>
