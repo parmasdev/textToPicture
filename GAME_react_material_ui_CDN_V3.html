@@ -9,6 +9,13 @@
   <script src="https://unpkg.com/react-dom@latest/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@material-ui/core@latest/umd/material-ui.development.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/babel-standalone@latest/babel.min.js" crossorigin="anonymous"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+  <script type="text/babel" src="js/FileUpload.js" crossorigin="anonymous"></script>
+  <script type="text/babel" src="js/LoadOrUploadFiles.js" crossorigin="anonymous"></script>
+  <script type="text/babel" src="js/TextToPicture.js" crossorigin="anonymous"></script>
+
   <!-- Fonts to support Material Design -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
   <!-- Icons to support Material Design -->
@@ -55,7 +62,10 @@
     DialogContent,
     DialogContentText,
     DialogTitle,
-    useMediaQuery ,
+    useMediaQuery,
+    Select,
+    MenuItem,
+    Switch,
   } = MaterialUI;
 
   // Create a theme instance.
@@ -120,40 +130,6 @@
 		return Math.floor(Math.random() * Math.floor(max));
 	}
 
-
-  ////////////////////////////////////////////////////////////////////////////////////////////
-  // FileUpload
-  ////////////////////////////////////////////////////////////////////////////////////////////
-
-  function FileUpload(props) {
-
-    const classes = props.classes;
-    const fileName =props.fileName;
-    const onClick = props.onClick;
-    const onChange = props.onChange;
-
-    return (
-
-      <FormControl>
-        <div>
-          <input type="file" style={{ display: 'none' }} id="fileInput" onChange={e=> {
-          onChange(e, onChange);
-          }} />
-
-          <Button className={classes.button} color="default"
-          label='My Label' onClick={(event)=> onClick(event)}>
-            Charger livre
-            < Icon className={classes.rightIcon}>file_upload</Icon>
-          </Button>
-
-          ({fileName})
-
-        </div>
-      </FormControl>
-
-
-    );
-  }
   ////////////////////////////////////////////////////////////////////////////////////////////
   // StoryPicture
   ////////////////////////////////////////////////////////////////////////////////////////////
@@ -210,69 +186,6 @@
 
     );
   }
-
-  ////////////////////////////////////////////////////////////////////////////////////////////
-  // textToPicture
-  ////////////////////////////////////////////////////////////////////////////////////////////
-
-  function TextToPicture(props) {
-
-    const classes = props.classes;
-    const text = props.text;
-    const synonymArray = props.synonymArray;
-    const direction = props.direction; //column | row
-    const imageSize = "70px";
-    const textSize = "h5"; // h1 to h9
-
-    var myText = text;
-    var myTextImage = myText;
-    var isPluriel = false;
-
-    if (myText.endsWith("]")) {
-      var myNewTextArrray = myText.split("[");
-      myText = myNewTextArrray[0];
-      myTextImage = myNewTextArrray[1];
-      myTextImage = myTextImage.slice(0, -1);
-      if (myTextImage.endsWith("X2")) {
-        isPluriel = true;
-        myTextImage = myTextImage.slice(0, -2);
-      }
-    }
-
-    myText = myText.replace(/_/g," ");
-
-    if (synonymArray.hasOwnProperty(myTextImage)) {
-      myTextImage = synonymArray[myTextImage];
-    }
-
-    return (
-
-      <Grid
-    container
-    direction={direction}
-    justify="center"
-    alignItems="center"
-  >
-     <Box>
-       <img src={"myImages\\"+myTextImage+".jpg"} height={imageSize}
-       onError={(e)=>{e.target.src="myImages\\none.jpg";}}/>
-       {isPluriel? (
-         <img src={"myImages\\"+myTextImage+".jpg"} height={imageSize}
-         onError={(e)=>{e.target.src="myImages\\none.jpg";}}/>
-       ):(
-         <div></div>
-       )
-       }
-     </Box>
-     <Box>
-       <Typography variant={textSize} gutterBottom>
-        {myText}
-      </Typography>
-     </Box>
-    </Grid>
-
-    )
-  };
 
   ////////////////////////////////////////////////////////////////////////////////////////////
   // dialogDisplaySentence
@@ -518,13 +431,18 @@
         pageWinStatus: []
       };
       this.onClickForFileUpload = this.onClickForFileUpload.bind(this);
-      this.onChangeForFileUpload = this.onChangeForFileUpload.bind(this);
       this.onClickNextPage = this.onClickNextPage.bind(this);
       this.onClickPreviousPage = this.onClickPreviousPage.bind(this);
       this.keyFunction = this.keyFunction.bind(this);
       this.changeRamdomSelected = this.changeRamdomSelected.bind(this);
       this.onClickRamdomSelected = this.onClickRamdomSelected.bind(this);
       this.onClickDisplayResult = this.onClickDisplayResult.bind(this);
+      this.handleFileNameChange = this.handleFileNameChange.bind(this);
+      this.onChangeForFileUpload = this.onChangeForFileUpload.bind(this);
+
+      // load existingBook
+      this.myExistingBook = JSON.parse(existingBook);
+      console.log("myExistingBook well loaded:",this.myExistingBook);
 
       // load synonym
       var mydata = JSON.parse(synonyms);
@@ -700,6 +618,23 @@
     }
 
     ////////////////////////////////////////////////////////////////////////////
+    // Game::handleFileNameChange
+    ////////////////////////////////////////////////////////////////////////////
+    handleFileNameChange = (evt) => {
+      this.setState({fileName: evt.target.value});
+
+        const scope = this;
+
+        $.getJSON(evt.target.value, function(json) {
+
+          scope.setState({pagesDataJson: json, isLoadedFile: true, currentPage: 0});
+          console.log("json well loaded: ",scope.state.pagesDataJson);
+
+      });
+
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
     // Game::onClickShowStory
     ////////////////////////////////////////////////////////////////////////////
     onClickShowStory = (evt) => {
@@ -827,6 +762,8 @@
       const { classes, onChange } = this.props;
       const { file, fileName, isLoadedFile, pagesDataJson, currentPage} = this.state;
 
+      const myExistingBook = this.myExistingBook;
+
       const handleClose = () => {
         this.setState({isDialogDisplaySentenceOpen: false});
         this.checkIfGoToNextPage();
@@ -856,8 +793,13 @@
 
           <Grid item container justify="center" xs={12}>
 
-          <FileUpload classes={classes} fileName={fileName}
-          onClick={(e)=> this.onClickForFileUpload(e)} onChange={(e)=> this.onChangeForFileUpload(e,onChange)} />
+          <LoadOrUploadFiles
+          classes={classes}
+          fileName={fileName}
+          myExistingBook={myExistingBook}
+          onClick={(e)=> this.onClickForFileUpload(e)}
+          onChangeFileName={(e)=> this.handleFileNameChange(e)}
+          onChangeUploadFile={(e)=> this.onChangeForFileUpload(e,onChange)} />
 
           </Grid>
 
