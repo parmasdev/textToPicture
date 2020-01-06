@@ -12,20 +12,23 @@ function FileUpload(props) {
   return (
 
     <FormControl>
-      <div>
+      <Grid item container direction="row" justify="space-around" alignItems="stretch">
         <input type="file" style={{ display: 'none' }} id="fileInput" onChange={e=> {
         onChange(e, onChange);
         }} />
 
+        <Typography variant="h6" gutterBottom onClick={(event)=> onClick(event)}>
+          {"Charger livre:"}
+        </Typography>
+
         <Button className={classes.button} color="default"
         label='My Label' onClick={(event)=> onClick(event)}>
-          Charger livre
           < Icon className={classes.rightIcon}>file_upload</Icon>
         </Button>
 
         ({fileName})
 
-      </div>
+      </Grid>
     </FormControl>
 
 
