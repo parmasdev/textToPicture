@@ -462,7 +462,7 @@
 
       if (this.state.isLocalFile) {
       // save in local repository
-      var blob = new Blob([JSON.stringify(this.state.pagesDataJson)], {type: "text/plain;charset=utf-8"});
+      var blob = new Blob([JSON.stringify(this.state.pagesDataJson, null,4)], {type: "text/plain;charset=utf-8"});
       saveAs(blob, this.state.fileName);
       this.setState({ pagesDataJsonBackup: [] });
       this.setState({ isSaved: true });
