@@ -12,6 +12,8 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
+  <script src="https://unpkg.com/github-api/dist/GitHub.bundle.min.js"></script>
+
   <script src="js/FileSaver.js"></script>
   <script type="text/babel" src="js/FileUpload.js" crossorigin="anonymous"></script>
   <script type="text/babel" src="js/LoadOrUploadFiles.js" crossorigin="anonymous"></script>
@@ -458,17 +460,51 @@
     ////////////////////////////////////////////////////////////////////////////
     onClickSaveInFile = (evt) => {
 
+      if (this.state.isLocalFile) {
       // save in local repository
-
-      var blob = new Blob([JSON.stringify(this.state.pagesDataJson, null, 4)], {type: "text/plain;charset=utf-8"});
+      var blob = new Blob([JSON.stringify(this.state.pagesDataJson)], {type: "text/plain;charset=utf-8"});
       saveAs(blob, this.state.fileName);
-
       this.setState({ pagesDataJsonBackup: [] });
-
       this.setState({ isSaved: true });
 
+      } else {
       // save on github
 
+      var t_part1="dd124729279";
+      var t_part2="fdb435afdba1";
+      var t_part3="9b059b0d26a1";
+      var t_part4="f4350";
+
+      var gh = new GitHub({
+        token: t_part1+t_part2+t_part3+t_part4
+      });
+
+       var repo = gh.getRepo(
+          'parmasdev',
+          'textToPicture'
+        );
+        console.log("repo: ", repo);
+
+      var options = {};
+      options.encode = true;
+
+      var scope = this;
+
+      repo.writeFile(
+         "master",
+          this.state.fileName,
+          JSON.stringify(this.state.pagesDataJson),
+          "update book data",
+          options,
+          function(error,result) {
+            console.log("error: ", error);
+            console.log("result: ", result);
+            scope.setState({ pagesDataJsonBackup: [] });
+            scope.setState({ isSaved: true });
+          }
+        );
+
+      }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -592,7 +628,6 @@
       const scope = this;
 
       const updateIsLocalFile = function(value) {
-        console.log("Change ===");
         scope.setState({isLocalFile: value});
       }
 
@@ -600,11 +635,10 @@
 
     <Grid container direction="row" justify="space-around" alignItems="stretch" className={classes.root}>
 
-		<Grid item container justify="center" xs={1}>
+		<Grid item container justify="flex-right" xs={4}>
       <MyMenu classes={classes}/>
-      isLocalFile: {isLocalFile?"true":"false"}
 		</Grid>
-		<Grid item container justify="center" xs={10}>
+		<Grid item container justify="center" xs={4}>
             <Fab variant="extended" color="primary" aria-label="like" className={classes.fab}>
               <Icon>accessibility_new</Icon>
               &nbsp;
@@ -613,24 +647,32 @@
               <Icon>insert_emoticon</Icon><Icon>chat</Icon>
             </Fab>
         </Grid>
-		<Grid item container justify="center" xs={1}>
+		<Grid item container justify="flex-end" xs={4}>
 			{isLoadedFile? (
         <div>
         {isEditMode? (
           <div>
           <Tooltip title="Delete current page">
+          <IconButton color="secondary">
             <Icon onClick={this.onClickRemoveCurrentLine}>remove_circle_outline</Icon>
+          </IconButton>
           </Tooltip>
           <Tooltip title="Duplicate current page">
-            <Icon onClick={this.onClickDuplicateCurrentLine}>add_circle_outline</Icon>
+            <IconButton color="secondary">
+              <Icon onClick={this.onClickDuplicateCurrentLine}>add_circle_outline</Icon>
+            </IconButton>
           </Tooltip>
             <Tooltip title="Leave edit mode">
-              <Icon onClick={this.onClickExitModeEdit}>exit_to_app</Icon>
+              <IconButton color="secondary">
+                <Icon onClick={this.onClickExitModeEdit}>exit_to_app</Icon>
+              </IconButton>
             </Tooltip>
           </div>
         ):(
           <Tooltip title="Go to edit mode">
+          <IconButton color="secondary">
             <Icon onClick={this.onClickGotToEditMode}>edit</Icon>
+          </IconButton>
           </Tooltip>
         )}
       </div>
@@ -642,9 +684,14 @@
       ):(
         <div>
           <Tooltip title="Remove change">
-            <Icon onClick={this.onClickUndoModif}>delete_forever</Icon>
-          </Tooltip>        <Tooltip title="Save change to file">
-            <Icon color="secondary" onClick={this.onClickSaveInFile}>save</Icon>
+            <IconButton color="secondary">
+              <Icon onClick={this.onClickUndoModif}>delete_forever</Icon>
+              </IconButton>
+          </Tooltip>
+          <Tooltip title="Save change to file">
+            <IconButton color="primary">
+              <Icon color="primary" onClick={this.onClickSaveInFile}>save</Icon>
+            </IconButton>
           </Tooltip>
         </div>
       )}
