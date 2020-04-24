@@ -1,13 +1,6 @@
 synonyms =
 '['
-+'{"imageName":"avoir","group":"verbe","synonym":"a"},'
-+'{"imageName":"dormir","group":"verbe","synonym":"dort"},'
-+'{"imageName":"dire","group":"verbe","synonym":"dit:appeller:appelle:appellé"},'
-+'{"imageName":"ecole","group":"lieu","synonym":"l\'ecole"},'
-+'{"imageName":"noir","group":"color","synonym":"noire"},'
-+'{"imageName":"maitresse","group":"person","synonym":"maitre:prof:instituteur:institutrice"},'
-+'{"imageName":"ouvrir","group":"verbe","synonym":"ouvre"},'
-+'{"imageName":"rentre","group":"verb","synonym":"va:aller:vais:allons:allé"}'
++'{"imageName":"ecole","group":"lieu","synonym":"l\'ecole"}'
 +']';
 
 existingBook =

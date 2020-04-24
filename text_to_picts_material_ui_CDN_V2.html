@@ -16,6 +16,7 @@
 
   <script type="text/babel" src="js/MyMenu.js" crossorigin="anonymous"></script>
   <script type="text/babel" src="js/TextToPicture.js" crossorigin="anonymous"></script>
+  <script type="text/babel" src="js/Footer.js" crossorigin="anonymous"></script>
 
   <script type="text/javascript" src="data.json"></script>
 
@@ -283,7 +284,10 @@
     const classes = useStyles();
 
     return (
-      <Game classes={classes}/>
+      <div>
+        <Game classes={classes}/>
+        <Footer classes={classes}/>
+      </div>
     );
   }
 
