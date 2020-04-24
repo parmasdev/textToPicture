@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
 
   <script type="text/babel" src="js/MyMenu.js" crossorigin="anonymous"></script>
+  <script type="text/babel" src="js/TextToPicture.js" crossorigin="anonymous"></script>
 
   <script type="text/javascript" src="data.json"></script>
 
@@ -108,66 +109,6 @@
  }),
 );
 
-  ////////////////////////////////////////////////////////////////////////////////////////////
-  // textToPicture
-  ////////////////////////////////////////////////////////////////////////////////////////////
-
-  function TextToPicture(props) {
-
-    const classes = props.classes;
-    const text = props.text;
-    const synonymArray = props.synonymArray;
-    const direction = props.direction; //column | row
-
-    var myText = text;
-    var myTextImage = text.toLowerCase();
-    var isPluriel = false;
-
-    if (myText.includes("[") && myText.endsWith("]")) {
-      var myNewTextArrray = myText.split("[");
-      myText = myNewTextArrray[0];
-      myTextImage = myNewTextArrray[1];
-      myTextImage = myTextImage.slice(0, -1);
-      if (myTextImage.endsWith("X2")) {
-        isPluriel = true;
-        myTextImage = myTextImage.slice(0, -2);
-      }
-    }
-
-    myText = myText.replace(/_/g," ");
-
-    if (synonymArray.hasOwnProperty(myTextImage)) {
-      myTextImage = synonymArray[myTextImage];
-    }
-
-    return (
-
-      <Grid
-    container
-    direction={direction}
-    justify="center"
-    alignItems="center"
-  >
-     <Box width={150} p={1} my={0.5} alignItems="center">
-       <img src={"myImages\\"+myTextImage+".jpg"} height="100px"
-       onError={(e)=>{e.target.src="myImages\\none.jpg";}}/>
-       {isPluriel? (
-         <img src={"myImages\\"+myTextImage+".jpg"} height="100px"
-         onError={(e)=>{e.target.src="myImages\\none.jpg";}}/>
-       ):(
-         <div></div>
-       )
-       }
-     </Box>
-     <Box>
-       <Typography variant="h4" gutterBottom>
-        {myText}
-      </Typography>
-     </Box>
-    </Grid>
-
-    )
-  };
 
   ////////////////////////////////////////////////////////////////////////////////////////////
   // DisplayResult
@@ -221,7 +162,7 @@
 
       // load synonym
       var mydata = JSON.parse(synonyms);
-      console.log("mydata well loade:",mydata);
+      //console.log("mydata well loade:",mydata);
 
       for (var i = 0; i < mydata.length; i++) {
         var myImageData = mydata[i];
@@ -235,7 +176,7 @@
           }
         }
       }
-      console.log("this.state.synonymArray:",this.state.synonymArray);
+      //console.log("this.state.synonymArray:",this.state.synonymArray);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -243,7 +184,7 @@
     ////////////////////////////////////////////////////////////////////////////
 
     handleTextValueChange = (event) => {
-      console.log("event: ",event);
+      //console.log("event: ",event);
       this.setState({ textValue: event.target.value });
     };
 
@@ -253,7 +194,7 @@
     ////////////////////////////////////////////////////////////////////////////
 
     handleAddTextValue = (event,newText) => {
-      console.log("event: ",event);
+      //console.log("event: ",event);
       this.setState({ textValue: this.state.textValue+" "+newText });
     };
 

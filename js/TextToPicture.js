@@ -8,6 +8,13 @@ function TextToPicture(props) {
   const text = props.text;
   const synonymArray = props.synonymArray;
   const direction = props.direction; //column | row
+
+  const imageSouces = "FR_Pictogrammes_couleur";
+  //const imageSouces = "myImages";
+
+  const fileExtention = ".png";
+  //const fileExtention = ".jpg";
+
   const imageSize = "70px";
   const textSize = "h5"; // h1 to h9
 
@@ -41,11 +48,11 @@ function TextToPicture(props) {
   alignItems="center"
 >
    <Box>
-     <img src={"myImages\\"+myTextImage+".jpg"} height={imageSize}
-     onError={(e)=>{e.target.src="myImages\\none.jpg";}}/>
+     <img src={imageSouces+"\\"+myTextImage+fileExtention} height={imageSize}
+     onError={(e)=>{e.target.src=imageSouces+"\\none.jpg";}}/>
      {isPluriel? (
-       <img src={"myImages\\"+myTextImage+".jpg"} height={imageSize}
-       onError={(e)=>{e.target.src="myImages\\none.jpg";}}/>
+       <img src={imageSouces+"\\"+myTextImage+fileExtention} height={imageSize}
+       onError={(e)=>{e.target.src=imageSouces+"\\none.jpg";}}/>
      ):(
        <div></div>
      )
