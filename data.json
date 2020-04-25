@@ -5,5 +5,5 @@ synonyms =
 
 existingBook =
 '['
-  +'{"url":"livres/bonne_nuit_Vendredi/livre.json","name":"Bonne nuit Vendredi"}'
+  +'{"url":"livres/Bonne_nuit_Vendredi/livre.json","name":"Bonne nuit Vendredi"}'
 +']';
