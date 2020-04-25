@@ -310,10 +310,10 @@
       ////////////////////////////////////////////////////////////////////////////
       // loadBook::just to load the book return JSON
       ////////////////////////////////////////////////////////////////////////////
-      function loadBook(url) {
+      function loadBook(myBookShortUrl, myBookUrl) {
 
           var xhr = new XMLHttpRequest();
-              xhr.open('GET', url, true);
+              xhr.open('GET', myBookUrl, true);
               xhr.responseType = 'json';
 
               xhr.onload = function() {
@@ -322,6 +322,7 @@
                   if (status == 200) {
                     console.log("xhr.response: ",xhr.response);
                     var json = xhr.response;
+                    scope.setState({fileName: myBookShortUrl});
                     scope.setState({pagesDataJson: json, isLoadedFile: true, currentPage: 0});
                   } else {
                       //no
@@ -335,18 +336,16 @@
       const queryString = window.location.search;
 
       const urlParams = new URLSearchParams(queryString);
-      var myBookUrl = urlParams.get('livre');
+      var myBookShortUrl = urlParams.get('livre');
 
-      scope.setState({fileName: myBookUrl});
+      console.log("myBookUrl: ",myBookShortUrl);
 
-      console.log("Mon livre: "+myBookUrl);
-
-      myBookUrl = window.location.protocol + "//" +
-          window.location.host + window.location.pathname.replace("lire.html","") + myBookUrl;
+      var myBookUrl = window.location.protocol + "//" +
+          window.location.host + window.location.pathname.replace("lire.html","") + myBookShortUrl;
 
       console.log("Mon livre (full path): "+myBookUrl);
 
-      loadBook(myBookUrl);
+      loadBook(myBookShortUrl, myBookUrl);
 
       this.onClickNextPage = this.onClickNextPage.bind(this);
       this.onClickPreviousPage = this.onClickPreviousPage.bind(this);
@@ -506,6 +505,8 @@
       options.encode = true;
 
       var scope = this;
+
+      console.log("this.state.fileName: "+this.state.fileName);
 
       repo.writeFile(
          "master",
@@ -675,6 +676,7 @@
           <Grid item container justify="center" xs={12}>
 
             {!this.state.isLoadedFile?"Fichier non trouvé! ("+fileName+")":""}
+            fileName: {fileName}
 
           </Grid>
 
