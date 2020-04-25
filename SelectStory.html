@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Choisi une l'histoire!</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no" />
+  <script src="https://unpkg.com/react@latest/umd/react.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@latest/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@material-ui/core@latest/umd/material-ui.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/babel-standalone@latest/babel.min.js" crossorigin="anonymous"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+  <script src="https://unpkg.com/github-api/dist/GitHub.bundle.min.js"></script>
+
+  <script src="js/FileSaver.js"></script>
+  <script type="text/babel" src="js/TextToPicture.js" crossorigin="anonymous"></script>
+  <script type="text/babel" src="js/Footer.js" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="js/MyMenu.js" crossorigin="anonymous"></script>
+
+  <!-- Fonts to support Material Design -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+  <!-- Icons to support Material Design -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+
+  <script type="text/javascript" src="data.json"></script>
+
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const {
+    colors,
+    CssBaseline,
+    ThemeProvider,
+    Typography,
+    Container,
+    makeStyles,
+    createMuiTheme,
+    createStyles,
+    Theme,
+    Box,
+    SvgIcon,
+    Link,
+    Grid,
+    Paper ,
+    AccessAlarm,
+    ThreeDRotation,
+    Icon,
+    Button,
+    GridList ,
+    GridListTile,
+    tileData,
+    sizing,
+    Input,
+    InputAdornment,
+    FormControl,
+    InputLabel,
+    AccountCircle,
+    Fab,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    useMediaQuery,
+    TextField,
+    Tooltip,
+    Select,
+    MenuItem,
+    Switch,
+    IconButton,
+    Menu,
+  } = MaterialUI;
+
+  // Create a theme instance.
+  const theme = createMuiTheme({
+    palette: {
+      primary: {
+        main: '#556cd6',
+      },
+      secondary: {
+        main: '#19857b',
+      },
+      error: {
+        main: colors.red.A400,
+      },
+      background: {
+        default: '#FFFAFA',
+      },
+    },
+  });
+
+  const useStyles = makeStyles(theme => ({
+    root: {
+     display: 'flex',
+     flexWrap: 'wrap',
+     justifyContent: 'space-around',
+     overflow: 'hidden',
+     backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing(3, 2),
+   },
+   button: {
+      margin: theme.spacing(1),
+    },
+    input: {
+      display: 'none',
+    },
+    root: {
+      flexGrow: 1,
+    },
+    paperFull: {
+      padding: theme.spacing(2),
+      textAlign: 'center',
+      color: theme.palette.text.primary,
+      background: 'ghostwhite',
+      borderColor: 'yellow',
+    },
+    paperFullSelected: {
+      padding: theme.spacing(2),
+      textAlign: 'center',
+      color: theme.palette.text.primary,
+      background: 'mistyrose',
+      borderColor: 'yellow',
+    },
+    paper: {
+      padding: theme.spacing(2),
+      textAlign: 'center',
+      color: theme.palette.text.secondary,
+      borderColor: 'yellow',
+    },
+    gridListHorizon: {
+          flexWrap: 'nowrap',
+          transform: 'translateZ(0)',
+    },
+    fab: {
+      margin: theme.spacing(1),
+    },
+    extendedIcon: {
+      marginRight: theme.spacing(1),
+    },
+    textField: {
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
+    },
+    absolute: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(3),
+  },
+  }));
+
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  // DisplayResult
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+  function DisplayResult(props) {
+
+    const classes = props.classes;
+    const synonymArray = props.synonymArray;
+    const mySentence = props.mySentence;
+
+    var listWords = mySentence.map((work,index) =>
+    <GridListTile key={index} style={{ width: 'auto' }}>
+          <Paper className={classes.paper}>
+              <TextToPicture direction={"column"} synonymArray={synonymArray}
+                classes={classes} text={work}/>
+          </Paper>
+    </GridListTile>
+    );
+
+    return (
+
+              <GridList className={classes.gridList} cols={1}>
+                {listWords}
+              </GridList>
+
+    );
+
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
+  // SelectStory
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+  class SelectStory extends React.Component {
+
+    ////////////////////////////////////////////////////////////////////////////
+    // SelectStory::constructor
+    ////////////////////////////////////////////////////////////////////////////
+    constructor(props) {
+      super(props);
+
+      this.state = {
+        fileName: "Aucune",
+        synonymArray: {},
+        isSelected: false,
+      };
+
+
+      // load synonym
+      var mydata = JSON.parse(synonyms);
+      console.log("mydata well loaded:",mydata);
+
+      // load existingBook
+      this.myExistingBook = JSON.parse(existingBook);
+      console.log("myExistingBook well loaded:",this.myExistingBook);
+
+      for (var i = 0; i < mydata.length; i++) {
+        var myImageData = mydata[i];
+          if (myImageData.hasOwnProperty("synonym")) {
+          var mySyn = myImageData.synonym.split(":");
+
+          for (var j = 0; j < mySyn.length; j++) {
+            if (myImageData.hasOwnProperty("imageName")) {
+            this.state.synonymArray[mySyn[j]] = myImageData.imageName;
+            }
+          }
+        }
+      }
+      console.log("this.state.synonymArray:",this.state.synonymArray);
+    }
+
+
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // SelectStory::render
+    ////////////////////////////////////////////////////////////////////////////
+    render() {
+
+      const { classes } = this.props;
+
+      const synonymArray = this.state.synonymArray;
+      const myExistingBook = this.myExistingBook;
+
+      const scope = this;
+
+      return (
+
+    <Grid container direction="row" className={classes.root}>
+
+		<Grid item container justify="flex-right" xs={4}>
+      <MyMenu classes={classes}/>
+		</Grid>
+		<Grid item container justify="center" xs={4}>
+            <Fab variant="extended" color="primary" aria-label="like" className={classes.fab}>
+              <Icon>accessibility_new</Icon>
+              &nbsp;
+              Choisi une histoire
+              &nbsp;&nbsp;&nbsp;
+              <Icon>insert_emoticon</Icon><Icon>chat</Icon>
+            </Fab>
+        </Grid>
+        <Grid item container justify="center" xs={4}>
+        &nbsp;
+        </Grid>
+
+          <Grid item container  xs={12}>
+
+          <Grid item container justify="flex-end" xs={12}>
+            &nbsp;
+          </Grid>
+
+          {myExistingBook.map(book => (
+              <Grid item container direction="row" justify="center" alignItems="center" xs={12}>
+              <Paper className={this.state.isSelected?classes.paperFullSelected:classes.paperFull} style={{width: "90%"}}
+                onMouseEnter={()=> this.setState({isSelected: true})}
+                 onMouseLeave={()=> this.setState({isSelected: false})}
+                  onClick={()=> document.location.href="lire.html?livre="+book.url}
+              >
+              <Grid item container xs={12} >
+                <Grid item container justify="flex-end" xs={4}>
+                  <img src={book.image} height="200px"/>
+                  </Grid>
+                  <Grid item container justify="flex-end" xs={1}>
+                    &nbsp;
+                  </Grid>
+                  <Grid item direction="row" justify="center" alignItems="flex-start" xs={7}>
+                      <br/>
+                      <DisplayResult synonymArray={this.state.synonymArray} classes={classes}
+                     mySentence={book.name.split(" ")} />
+                  </Grid>
+                  </Grid>
+                </Paper>
+              </Grid>
+            ))
+          }
+
+
+
+
+          </Grid>
+          <Grid item container justify="flex-end" xs={12}>
+              &nbsp;<br/>
+              &nbsp;<br/>
+          </Grid>
+      </Grid>
+
+      );
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  // APP
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+  function App() {
+
+    const classes = useStyles();
+
+    return (
+
+      <div>
+        <SelectStory classes={classes}/>
+        <Footer classes={classes}/>
+      </div>
+
+    );
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  // render
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+  ReactDOM.render(
+    <ThemeProvider theme={theme}>
+    {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+    <CssBaseline />
+    <App />
+    </ThemeProvider>,
+    document.querySelector('#root'),
+  );
+  </script>
+</body>
+
+</html>

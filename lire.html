@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Lire l'histoire!</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no" />
+  <script src="https://unpkg.com/react@latest/umd/react.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@latest/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@material-ui/core@latest/umd/material-ui.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/babel-standalone@latest/babel.min.js" crossorigin="anonymous"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+  <script src="https://unpkg.com/github-api/dist/GitHub.bundle.min.js"></script>
+
+  <script src="js/FileSaver.js"></script>
+  <script type="text/babel" src="js/FileUpload.js" crossorigin="anonymous"></script>
+  <script type="text/babel" src="js/LoadOrUploadFiles.js" crossorigin="anonymous"></script>
+  <script type="text/babel" src="js/TextToPicture.js" crossorigin="anonymous"></script>
+  <script type="text/babel" src="js/Footer.js" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="js/MyMenu.js" crossorigin="anonymous"></script>
+
+  <!-- Fonts to support Material Design -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+  <!-- Icons to support Material Design -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+
+  <script type="text/javascript" src="data.json"></script>
+
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const {
+    colors,
+    CssBaseline,
+    ThemeProvider,
+    Typography,
+    Container,
+    makeStyles,
+    createMuiTheme,
+    createStyles,
+    Theme,
+    Box,
+    SvgIcon,
+    Link,
+    Grid,
+    Paper ,
+    AccessAlarm,
+    ThreeDRotation,
+    Icon,
+    Button,
+    GridList ,
+    GridListTile,
+    tileData,
+    sizing,
+    Input,
+    InputAdornment,
+    FormControl,
+    InputLabel,
+    AccountCircle,
+    Fab,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    useMediaQuery,
+    TextField,
+    Tooltip,
+    Select,
+    MenuItem,
+    Switch,
+    IconButton,
+    Menu,
+  } = MaterialUI;
+
+  // Create a theme instance.
+  const theme = createMuiTheme({
+    palette: {
+      primary: {
+        main: '#556cd6',
+      },
+      secondary: {
+        main: '#19857b',
+      },
+      error: {
+        main: colors.red.A400,
+      },
+      background: {
+        default: '#FFFAFA',
+      },
+    },
+  });
+
+  const useStyles = makeStyles(theme => ({
+    root: {
+     display: 'flex',
+     flexWrap: 'wrap',
+     justifyContent: 'space-around',
+     overflow: 'hidden',
+     backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing(3, 2),
+   },
+   button: {
+      margin: theme.spacing(1),
+    },
+    input: {
+      display: 'none',
+    },
+    root: {
+      flexGrow: 1,
+    },
+    paper: {
+      padding: theme.spacing(2),
+      textAlign: 'center',
+      color: theme.palette.text.secondary,
+      borderColor: 'yellow',
+    },
+    gridListHorizon: {
+          flexWrap: 'nowrap',
+          transform: 'translateZ(0)',
+    },
+    fab: {
+      margin: theme.spacing(1),
+    },
+    extendedIcon: {
+      marginRight: theme.spacing(1),
+    },
+    textField: {
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
+    },
+    absolute: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(3),
+  },
+  }));
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  // StoryPicture
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+  function StoryPicture(props) {
+
+    const pagesDataJson = props.pagesDataJson;
+    const isLoadedFile = props.isLoadedFile;
+    const isEditMode = props.isEditMode;
+    const currentPage = props.currentPage;
+    const classes =props.classes;
+    const onClickNextPage = props.onClickNextPage;
+    const onClickPreviousPage = props.onClickPreviousPage;
+    const handlePageNumberChange = props.handlePageNumberChange;
+    const handlePictureUrlValueChange = props.handlePictureUrlValueChange;
+
+    const myList = Array.from(Array(props.pagesDataJson.length).keys());
+
+    const options = myList.map(v => (
+        <MenuItem key={v+1} value={v+1}>{v+1}</MenuItem>
+        ));
+
+    return (
+      <div>
+      {isLoadedFile ? (
+      <Grid container justify="center" alignItems="center">
+
+        <Grid item xs={1}>
+          &nbsp;
+        </Grid>
+
+        <Grid item xs={10} container justify="center" alignItems="center">
+        {isEditMode? (
+          <TextField
+            id="standard-full-width"
+            fullWidth
+            label="Modifie image"
+            margin="normal"
+            variant="outlined"
+            value={pagesDataJson[currentPage].picture}
+            onChange={(e)=> handlePictureUrlValueChange(e)}
+          />
+        ) : (
+          <div></div>
+        )}
+        </Grid>
+
+        <Grid item xs={1}>
+          &nbsp;
+        </Grid>
+
+        <Grid item xs={2} container justify="center" alignItems="center">
+
+            {currentPage!=0? (
+            <Fab color="secondary" aria-label="edit" className={classes.fab} onClick={(event)=> onClickPreviousPage(event)}>
+              <Icon>arrow_back_ios</Icon>
+            </Fab>
+            ):(
+            <Fab disabled color="secondary" aria-label="edit" className={classes.fab}>
+              <Icon>arrow_back_ios</Icon>
+            </Fab>
+            )}
+
+        </Grid>
+
+        <Grid item xs={8} container justify="center" alignItems="center">
+
+            <img src={pagesDataJson[currentPage].picture} height="400px"/>
+
+        </Grid>
+
+
+        <Grid item xs={2} container justify="center" alignItems="center">
+
+            {currentPage+1!=pagesDataJson.length? (
+            <Fab color="secondary" aria-label="edit" className={classes.fab} onClick={(event)=> onClickNextPage(event)}>
+              <Icon>arrow_forward_ios</Icon>
+            </Fab>
+            ):(
+            <Fab disabled color="secondary" aria-label="edit" className={classes.fab}>
+              <Icon>arrow_forward_ios</Icon>
+            </Fab>
+            )}
+
+        </Grid>
+
+        <Grid item xs={12} container justify="center" alignItems="center">
+
+            <FormControl className={classes.formControl}>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={currentPage+1}
+              onChange={(event)=> handlePageNumberChange(event)}
+            >
+            {options}
+            </Select>
+          </FormControl>
+
+        </Grid>
+
+      </Grid>
+       ) : (
+        <br/>
+      )}
+      </div>
+
+    );
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  // DisplayResult
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+  function DisplayResult(props) {
+
+    const classes = props.classes;
+    const synonymArray = props.synonymArray;
+    const mySentence = props.mySentence;
+
+    var listWords = mySentence.map((work,index) =>
+    <GridListTile key={index} style={{ width: 'auto' }}>
+          <Paper className={classes.paper}>
+              <TextToPicture direction={"column"} synonymArray={synonymArray}
+                classes={classes} text={work}/>
+          </Paper>
+    </GridListTile>
+    );
+
+    return (
+
+              <GridList className={classes.gridList} cols={1}>
+                {listWords}
+              </GridList>
+
+    );
+
+  }
+
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
+  // ReadStory
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+  class ReadStory extends React.Component {
+
+    ////////////////////////////////////////////////////////////////////////////
+    // ReadStory::constructor
+    ////////////////////////////////////////////////////////////////////////////
+    constructor(props) {
+      super(props);
+      this.state = {
+        isLocalFile: false,
+        file: [],
+        fileName: "Aucune",
+        isLoadedFile: false,
+        isEditMode: false,
+        isSaved: true,
+        currentPage: -1,
+        pagesDataJson: [],
+        pagesDataJsonBackup: [],
+        synonymArray: {}
+      };
+
+    const scope = this;
+
+      ////////////////////////////////////////////////////////////////////////////
+      // loadBook::just to load the book return JSON
+      ////////////////////////////////////////////////////////////////////////////
+      function loadBook(url) {
+
+          var xhr = new XMLHttpRequest();
+              xhr.open('GET', url, true);
+              xhr.responseType = 'json';
+
+              xhr.onload = function() {
+                  var status = xhr.status;
+
+                  if (status == 200) {
+                    console.log("xhr.response: ",xhr.response);
+                    var json = xhr.response;
+                    scope.setState({pagesDataJson: json, isLoadedFile: true, currentPage: 0});
+                  } else {
+                      //no
+                  }
+              };
+              xhr.send();
+      }
+      ////////////////////////////////////////////////////////////////////////////
+
+
+      const queryString = window.location.search;
+
+      const urlParams = new URLSearchParams(queryString);
+      var myBookUrl = urlParams.get('livre');
+
+      scope.setState({fileName: myBookUrl});
+
+      console.log("Mon livre: "+myBookUrl);
+
+      myBookUrl = window.location.protocol + "//" +
+          window.location.host + window.location.pathname.replace("lire.html","") + myBookUrl;
+
+      console.log("Mon livre (full path): "+myBookUrl);
+
+      var json = loadBook(myBookUrl);
+
+      this.onClickNextPage = this.onClickNextPage.bind(this);
+      this.onClickPreviousPage = this.onClickPreviousPage.bind(this);
+      this.onClickGotToEditMode = this.onClickGotToEditMode.bind(this);
+      this.onClickExitModeEdit = this.onClickExitModeEdit.bind(this);
+      this.handleTextValueChange = this.handleTextValueChange.bind(this);
+      this.onClickSaveInFile = this.onClickSaveInFile.bind(this);
+      this.onClickUndoModif = this.onClickUndoModif.bind(this);
+      this.handlePageNumberChange = this.handlePageNumberChange.bind(this);
+      this.handlePictureUrlValueChange = this.handlePictureUrlValueChange.bind(this);
+      this.onClickDuplicateCurrentLine = this.onClickDuplicateCurrentLine.bind(this);
+      this.onClickRemoveCurrentLine = this.onClickRemoveCurrentLine.bind(this);
+
+
+      // load synonym
+      var mydata = JSON.parse(synonyms);
+      console.log("mydata well loaded:",mydata);
+
+      // load existingBook
+      this.myExistingBook = JSON.parse(existingBook);
+      console.log("myExistingBook well loaded:",this.myExistingBook);
+
+      for (var i = 0; i < mydata.length; i++) {
+        var myImageData = mydata[i];
+          if (myImageData.hasOwnProperty("synonym")) {
+          var mySyn = myImageData.synonym.split(":");
+
+          for (var j = 0; j < mySyn.length; j++) {
+            if (myImageData.hasOwnProperty("imageName")) {
+            this.state.synonymArray[mySyn[j]] = myImageData.imageName;
+            }
+          }
+        }
+      }
+      console.log("this.state.synonymArray:",this.state.synonymArray);
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // ReadStory::onClickNextPAge
+    ////////////////////////////////////////////////////////////////////////////
+    onClickNextPage = (evt) => {
+      if (this.state.currentPage+1 != this.state.pagesDataJson.length) {
+        this.setState({currentPage: this.state.currentPage+1});
+      }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // ReadStory::onClickPreviousPage
+    ////////////////////////////////////////////////////////////////////////////
+    onClickPreviousPage = (evt) => {
+      if (this.state.currentPage != 0) {
+        this.setState({currentPage: this.state.currentPage-1});
+      }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // ReadStory::handlePageNumberChange
+    ////////////////////////////////////////////////////////////////////////////
+    handlePageNumberChange = (evt) => {
+      this.setState({currentPage: evt.target.value-1});
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // ReadStory::onClickGotToEditMode
+    ////////////////////////////////////////////////////////////////////////////
+    onClickGotToEditMode = (evt) => {
+        this.setState({isEditMode: true});
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // ReadStory::onClickDuplicateCurrentLine
+    ////////////////////////////////////////////////////////////////////////////
+    onClickDuplicateCurrentLine = (evt) => {
+
+      // init bck part
+      if (this.state.pagesDataJsonBackup.length==0) {
+        var pagesDataJsonBackupTmp = JSON.parse(JSON.stringify(this.state.pagesDataJson));
+        this.setState({ pagesDataJsonBackup: pagesDataJsonBackupTmp});
+      }
+
+      var pagesDataJsonTmp = this.state.pagesDataJson;
+
+      pagesDataJsonTmp.splice(this.state.currentPage+1, 0,
+          {picture: pagesDataJsonTmp[this.state.currentPage].picture, text: "NOUVELLE_LIGNE"}
+      );
+
+      this.setState({ pagesDataJson: pagesDataJsonTmp});
+      this.setState({ currentPage: this.state.currentPage+1});
+
+      if (JSON.stringify(this.state.pagesDataJsonBackup)==JSON.stringify(this.state.pagesDataJson)) {
+        this.setState({ isSaved: true });
+      } else {
+        this.setState({ isSaved: false });
+      }
+
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // ReadStory::onClickRemoveCurrentLine
+    ////////////////////////////////////////////////////////////////////////////
+    onClickRemoveCurrentLine = (evt) => {
+
+      // init bck part
+      if (this.state.pagesDataJsonBackup.length==0) {
+        var pagesDataJsonBackupTmp = JSON.parse(JSON.stringify(this.state.pagesDataJson));
+        this.setState({ pagesDataJsonBackup: pagesDataJsonBackupTmp});
+      }
+
+      var pagesDataJsonTmp = this.state.pagesDataJson;
+
+      pagesDataJsonTmp.splice(this.state.currentPage, 1);
+
+      this.setState({ pagesDataJson: pagesDataJsonTmp});
+      this.setState({ currentPage: this.state.currentPage-1});
+
+      if (JSON.stringify(this.state.pagesDataJsonBackup)==JSON.stringify(this.state.pagesDataJson)) {
+        this.setState({ isSaved: true });
+      } else {
+        this.setState({ isSaved: false });
+      }
+
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // ReadStory::onClickSaveInFile
+    ////////////////////////////////////////////////////////////////////////////
+    onClickSaveInFile = (evt) => {
+
+      if (this.state.isLocalFile) {
+      // save in local repository
+      var blob = new Blob([JSON.stringify(this.state.pagesDataJson, null,4)], {type: "text/plain;charset=utf-8"});
+      saveAs(blob, this.state.fileName);
+      this.setState({ pagesDataJsonBackup: [] });
+      this.setState({ isSaved: true });
+
+      } else {
+      // save on github
+
+      var t_part1="dd124729279";
+      var t_part2="fdb435afdba1";
+      var t_part3="9b059b0d26a1";
+      var t_part4="f4350";
+
+      var gh = new GitHub({
+        token: t_part1+t_part2+t_part3+t_part4
+      });
+
+       var repo = gh.getRepo(
+          'parmasdev',
+          'textToPicture'
+        );
+        console.log("repo: ", repo);
+
+      var options = {};
+      options.encode = true;
+
+      var scope = this;
+
+      repo.writeFile(
+         "master",
+          this.state.fileName,
+          JSON.stringify(this.state.pagesDataJson),
+          "update book data",
+          options,
+          function(error,result) {
+            console.log("error: ", error);
+            console.log("result: ", result);
+            scope.setState({ pagesDataJsonBackup: [] });
+            scope.setState({ isSaved: true });
+          }
+        );
+
+      }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // ReadStory::onClickUndoModif
+    ////////////////////////////////////////////////////////////////////////////
+    onClickUndoModif = (evt) => {
+
+      this.setState({ pagesDataJson: this.state.pagesDataJsonBackup });
+      this.setState({ pagesDataJsonBackup: [] });
+      this.setState({ isSaved: true });
+
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // ReadStory::onClickExitModeEdit
+    ////////////////////////////////////////////////////////////////////////////
+    onClickExitModeEdit = (evt) => {
+        this.setState({isEditMode: false});
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // ReadStory::handleTextValueChange
+    ////////////////////////////////////////////////////////////////////////////
+
+    handleTextValueChange = (event) => {
+
+      // init bck part
+      if (this.state.pagesDataJsonBackup.length==0) {
+        var pagesDataJsonBackupTmp = JSON.parse(JSON.stringify(this.state.pagesDataJson));
+        this.setState({ pagesDataJsonBackup: pagesDataJsonBackupTmp});
+      }
+
+      var pagesDataJsonTmp = this.state.pagesDataJson;
+      pagesDataJsonTmp[this.state.currentPage].text=event.target.value;
+      this.setState({ pagesDataJson: pagesDataJsonTmp});
+
+      if (JSON.stringify(this.state.pagesDataJsonBackup)==JSON.stringify(this.state.pagesDataJson)) {
+        this.setState({ isSaved: true });
+      } else {
+        this.setState({ isSaved: false });
+      }
+
+    };
+
+    ////////////////////////////////////////////////////////////////////////////
+    // ReadStory::handleTextValueChange
+    ////////////////////////////////////////////////////////////////////////////
+
+    handlePictureUrlValueChange = (event) => {
+
+      // init bck part
+      if (this.state.pagesDataJsonBackup.length==0) {
+        var pagesDataJsonBackupTmp = JSON.parse(JSON.stringify(this.state.pagesDataJson));
+        this.setState({ pagesDataJsonBackup: pagesDataJsonBackupTmp});
+      }
+
+      var pagesDataJsonTmp = this.state.pagesDataJson;
+      pagesDataJsonTmp[this.state.currentPage].picture=event.target.value;
+      this.setState({ pagesDataJson: pagesDataJsonTmp});
+
+      if (JSON.stringify(this.state.pagesDataJsonBackup)==JSON.stringify(this.state.pagesDataJson)) {
+        this.setState({ isSaved: true });
+      } else {
+        this.setState({ isSaved: false });
+      }
+
+    };
+
+    ////////////////////////////////////////////////////////////////////////////
+    // ReadStory::render
+    ////////////////////////////////////////////////////////////////////////////
+    render() {
+
+      const { classes } = this.props;
+      const { file, isLocalFile, fileName, isLoadedFile, isEditMode, isSaved, pagesDataJson, currentPage} = this.state;
+
+      const myExistingBook = this.myExistingBook;
+
+      const scope = this;
+
+      const updateIsLocalFile = function(value) {
+        scope.setState({isLocalFile: value});
+      }
+
+      return (
+
+    <Grid container direction="row" justify="space-around" alignItems="stretch" className={classes.root}>
+
+		<Grid item container justify="flex-right" xs={4}>
+      <MyMenu classes={classes}/>
+		</Grid>
+		<Grid item container justify="center" xs={4}>
+            <Fab variant="extended" color="primary" aria-label="like" className={classes.fab}>
+              <Icon>accessibility_new</Icon>
+              &nbsp;
+              Lire l&#39;hitoire
+              &nbsp;&nbsp;&nbsp;
+              <Icon>insert_emoticon</Icon><Icon>chat</Icon>
+            </Fab>
+        </Grid>
+		<Grid item container justify="flex-end" xs={4}>
+			{isLoadedFile? (
+        <div>
+        {isEditMode? (
+          <div>
+          <Tooltip title="Delete current page">
+          <IconButton color="secondary">
+            <Icon onClick={this.onClickRemoveCurrentLine}>remove_circle_outline</Icon>
+          </IconButton>
+          </Tooltip>
+          <Tooltip title="Duplicate current page">
+            <IconButton color="secondary">
+              <Icon onClick={this.onClickDuplicateCurrentLine}>add_circle_outline</Icon>
+            </IconButton>
+          </Tooltip>
+            <Tooltip title="Leave edit mode">
+              <IconButton color="secondary">
+                <Icon onClick={this.onClickExitModeEdit}>exit_to_app</Icon>
+              </IconButton>
+            </Tooltip>
+          </div>
+        ):(
+          <Tooltip title="Go to edit mode">
+          <IconButton color="secondary">
+            <Icon onClick={this.onClickGotToEditMode}>edit</Icon>
+          </IconButton>
+          </Tooltip>
+        )}
+      </div>
+			) : (
+			<Icon color="disabled">edit</Icon>
+			)}
+      {isSaved? (
+        <div></div>
+      ):(
+        <div>
+          <Tooltip title="Remove change">
+            <IconButton color="secondary">
+              <Icon onClick={this.onClickUndoModif}>delete_forever</Icon>
+              </IconButton>
+          </Tooltip>
+          <Tooltip title="Save change to file">
+            <IconButton color="primary">
+              <Icon color="primary" onClick={this.onClickSaveInFile}>save</Icon>
+            </IconButton>
+          </Tooltip>
+        </div>
+      )}
+		</Grid>
+
+          <Grid item container justify="center" xs={12}>
+
+            {!this.state.isLoadedFile?"Fichier non trouvé! ("+fileName+")":""}
+
+          </Grid>
+
+
+            <Grid container direction="row" justify="space-around" alignItems="stretch" item xs={5}>
+
+                <StoryPicture isLoadedFile={isLoadedFile} pagesDataJson={pagesDataJson}
+                 currentPage={currentPage}
+                 classes={classes}
+                 isEditMode={isEditMode}
+                 handlePictureUrlValueChange={(e)=> this.handlePictureUrlValueChange(e)}
+                 handlePageNumberChange={(e)=> this.handlePageNumberChange(e)}
+                 onClickPreviousPage={(e)=> this.onClickPreviousPage(e)}
+                 onClickNextPage={(e)=> this.onClickNextPage(e)}/>
+
+          </Grid>
+
+            <Grid container direction="row" spacing={1} justify="space-around" alignItems="center" item xs={6}>
+
+            <Grid container direction="row" spacing={1} justify="space-around" alignItems="center" item xs={12}>
+
+              <DisplayResult synonymArray={this.state.synonymArray} classes={classes}
+               mySentence={this.state.currentPage==-1?[]:
+                 this.state.pagesDataJson[this.state.currentPage].text.length==0?
+                 []:this.state.pagesDataJson[this.state.currentPage].text.split(" ")} />
+
+            </Grid>
+
+              <Grid container direction="row" spacing={1} justify="space-around" alignItems="center" item xs={12}>
+
+                  {isEditMode? (
+                    <TextField
+                      id="standard-full-width"
+                      fullWidth
+                      label="Modifie mon texte"
+                      margin="normal"
+                      variant="outlined"
+                      value={this.state.pagesDataJson[this.state.currentPage].text}
+                      onChange={(e)=> this.handleTextValueChange(e)}
+                    />
+                  ) : (
+                    <div></div>
+                  )}
+
+              </Grid>
+
+            </Grid>
+
+            <Grid container direction="row" justify="space-around" alignItems="stretch" item xs={1}>
+              &nbsp;
+            </Grid>
+
+          </Grid>
+
+      );
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  // APP
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+  function App() {
+
+    const classes = useStyles();
+
+    return (
+
+      <div>
+        <ReadStory classes={classes}/>
+        <Footer classes={classes}/>
+      </div>
+
+    );
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  // render
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+  ReactDOM.render(
+    <ThemeProvider theme={theme}>
+    {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+    <CssBaseline />
+    <App />
+    </ThemeProvider>,
+    document.querySelector('#root'),
+  );
+  </script>
+</body>
+
+</html>
