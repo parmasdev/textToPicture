@@ -12,7 +12,7 @@ function Footer(props) {
     <Grid container direction="row" justify="center" alignItems="stretch" className={classes.root}>
 
     <Grid item container justify="center" xs={12}>
-    Site crée par &nbsp;<b>P. Armas</b>&nbsp;
+    Site créer par &nbsp;<b>P. Armas</b>&nbsp;
      (<a target="_blank" href="mailto:patrice.armas@gmail.com">contacter</a>)
       pour Alan
     </Grid>

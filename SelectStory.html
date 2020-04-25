@@ -74,6 +74,7 @@
     Switch,
     IconButton,
     Menu,
+    Fade,
   } = MaterialUI;
 
   // Create a theme instance.
@@ -83,7 +84,7 @@
         main: '#556cd6',
       },
       secondary: {
-        main: '#19857b',
+        main: '#DC143C',
       },
       error: {
         main: colors.red.A400,
@@ -270,16 +271,43 @@
               <Paper className={this.state.isSelected?classes.paperFullSelected:classes.paperFull} style={{width: "90%"}}
                 onMouseEnter={()=> this.setState({isSelected: true})}
                  onMouseLeave={()=> this.setState({isSelected: false})}
-                  onClick={()=> document.location.href="lire.html?livre="+book.url}
               >
               <Grid item container xs={12} >
-                <Grid item container justify="flex-end" xs={4}>
-                  <img src={book.image} height="200px"/>
+                <Grid item container xs={1} >
+                </Grid>
+                <Grid item container justify="flex-end" xs={3}
+                  style={{backgroundPosition: 'left', backgroundImage: "url("+book.image+")", backgroundRepeat: "no-repeat", backgroundSize: "auto 200px" }}>
+
+                    <Grid item container justify="flex-start" xs={12} >
+                    <Fade in={this.state.isSelected}>
+                        <Button
+                      variant="contained"
+                      color="secondary"
+                      className={classes.button}
+                      startIcon={<Icon>send</Icon>}
+                      onClick={()=> document.location.href="lire.html?livre="+book.url}
+                    >Lire
+                  </Button>
+                  </Fade>
                   </Grid>
-                  <Grid item container justify="flex-end" xs={1}>
+                <Grid item container justify="flex-start" xs={12} >
+                <Fade in={this.state.isSelected}>
+                  <Button
+                      variant="contained"
+                      color="secondary"
+                      className={classes.button}
+                      startIcon={<Icon>send</Icon>}
+                      onClick={()=> document.location.href="jouer.html?livre="+book.url}
+                    >Jouer
+                  </Button>
+                </Fade>
+            </Grid>
+            </Grid>
+            <Grid item container justify="flex-end" xs={1}>
                     &nbsp;
-                  </Grid>
-                  <Grid item direction="row" justify="center" alignItems="flex-start" xs={7}>
+            </Grid>
+                <Grid item direction="row" justify="center" alignItems="flex-start" xs={7}
+                onClick={()=> document.location.href="lire.html?livre="+book.url}>
                       <br/>
                       <DisplayResult synonymArray={this.state.synonymArray} classes={classes}
                      mySentence={book.name.split(" ")} />

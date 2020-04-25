@@ -16,7 +16,6 @@
 
   <script src="js/FileSaver.js"></script>
   <script type="text/babel" src="js/FileUpload.js" crossorigin="anonymous"></script>
-  <script type="text/babel" src="js/LoadOrUploadFiles.js" crossorigin="anonymous"></script>
   <script type="text/babel" src="js/TextToPicture.js" crossorigin="anonymous"></script>
   <script type="text/babel" src="js/Footer.js" crossorigin="anonymous"></script>
 
@@ -347,7 +346,7 @@
 
       console.log("Mon livre (full path): "+myBookUrl);
 
-      var json = loadBook(myBookUrl);
+      loadBook(myBookUrl);
 
       this.onClickNextPage = this.onClickNextPage.bind(this);
       this.onClickPreviousPage = this.onClickPreviousPage.bind(this);
