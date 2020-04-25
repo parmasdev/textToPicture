@@ -266,20 +266,24 @@
             &nbsp;
           </Grid>
 
-          {myExistingBook.map(book => (
+          {myExistingBook.map((book,index)=> (
               <Grid item container direction="row" justify="center" alignItems="center" xs={12}>
-              <Paper className={this.state.isSelected?classes.paperFullSelected:classes.paperFull} style={{width: "90%"}}
-                onMouseEnter={()=> this.setState({isSelected: true})}
-                 onMouseLeave={()=> this.setState({isSelected: false})}
+              <Grid item container direction="row" justify="center" alignItems="center" xs={12}>
+                &nbsp;<br/>
+              </Grid>
+              <Grid item container direction="row" justify="center" alignItems="center" xs={12}>
+              <Paper className={this.state.isSelected==index?classes.paperFullSelected:classes.paperFull} style={{width: "90%"}}
+                onMouseEnter={()=> this.setState({isSelected: index})}
+                 onMouseLeave={()=> this.setState({isSelected: -1})}
               >
               <Grid item container xs={12} >
                 <Grid item container xs={1} >
                 </Grid>
                 <Grid item container justify="flex-end" xs={3}
-                  style={{backgroundPosition: 'left', backgroundImage: "url("+book.image+")", backgroundRepeat: "no-repeat", backgroundSize: "auto 200px" }}>
+                  style={{backgroundPosition: 'left', backgroundImage: "url("+book.image+")", backgroundRepeat: "no-repeat", backgroundSize: "auto 180px" }}>
 
                     <Grid item container justify="flex-start" xs={12} >
-                    <Fade in={this.state.isSelected}>
+                    <Fade in={this.state.isSelected==index}>
                         <Button
                       variant="contained"
                       color="secondary"
@@ -291,7 +295,7 @@
                   </Fade>
                   </Grid>
                 <Grid item container justify="flex-start" xs={12} >
-                <Fade in={this.state.isSelected}>
+                <Fade in={this.state.isSelected==index}>
                   <Button
                       variant="contained"
                       color="secondary"
@@ -315,8 +319,9 @@
                   </Grid>
                 </Paper>
               </Grid>
-            ))
-          }
+          </Grid>
+          ))
+        }
 
 
 

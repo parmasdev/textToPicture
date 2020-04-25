@@ -26,6 +26,9 @@ function Footer(props) {
     Pratham Books' StoryWeaver (<a target="_blank" href="https://storyweaver.org.in">https://storyweaver.org.in</a>) sous
     licence Creative Commons
     </Grid>
+    <Grid item container justify="center" xs={12}>
+      &nbsp;
+    </Grid>
 
     </Grid>
 
