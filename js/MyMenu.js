@@ -34,7 +34,9 @@ function MyMenu(props) {
       >
       <MenuItem onClick={handleClose}>
         <Link href="SelectStory.html">
-          <Icon>menu</Icon>&nbsp;Menu principal
+          <Icon>menu</Icon>&nbsp;Menu principal<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Icon>menu_book</Icon>&nbsp;Lire<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Icon>sports_esports</Icon>&nbsp;Jouer<br/>
         </Link>
       </MenuItem>
       <MenuItem onClick={handleClose}>
