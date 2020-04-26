@@ -17,6 +17,7 @@
   <script type="text/babel" src="js/MyMenu.js" crossorigin="anonymous"></script>
   <script type="text/babel" src="js/TextToPicture.js" crossorigin="anonymous"></script>
   <script type="text/babel" src="js/Footer.js" crossorigin="anonymous"></script>
+  <script type="text/babel" src="js/InteractiveTextField.js" crossorigin="anonymous"></script>
 
   <script type="text/javascript" src="data.json"></script>
 
@@ -68,6 +69,7 @@
     AddIcon,
     Menu,
     MenuItem,
+    Chip,
   } = MaterialUI;
 
   // Create a theme instance.
@@ -144,22 +146,22 @@
 
 
   ///////////////////////////////////////////////////////////////////////////////////////////
-  // Game
+  // Write
   ////////////////////////////////////////////////////////////////////////////////////////////
 
-  class Game extends React.Component {
+  class Write extends React.Component {
 
     ////////////////////////////////////////////////////////////////////////////
-    // Game::constructor
+    // Write::constructor
     ////////////////////////////////////////////////////////////////////////////
     constructor(props) {
       super(props);
       this.state = {
-        textValue: "?",
+        textValue: "coucou[bonjour] je suis_la[la]",
         synonymArray: {}
-      }
+      };
 
-      this.handleTextValueChange = this.handleTextValueChange.bind(this);
+      const scope = this;
 
       // load synonym
       var mydata = JSON.parse(synonyms);
@@ -181,27 +183,21 @@
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // Game::handleNameChange
-    ////////////////////////////////////////////////////////////////////////////
-
-    handleTextValueChange = (event) => {
-      //console.log("event: ",event);
-      this.setState({ textValue: event.target.value });
-    };
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Game::handleAddTextValue
+    // Write::handleAddTextValue
     ////////////////////////////////////////////////////////////////////////////
 
     handleAddTextValue = (event,newText) => {
       //console.log("event: ",event);
       this.setState({ textValue: this.state.textValue+(this.state.textValue==""?"":" ")+newText });
-    };
+    }
 
+
+    setTextValue = (newText) => {
+      this.setState({ textValue: newText });
+    }
 
     ////////////////////////////////////////////////////////////////////////////
-    // Game::render
+    // Write::render
     ////////////////////////////////////////////////////////////////////////////
     render() {
 
@@ -239,22 +235,13 @@
               justify="center"
               alignItems="center">
 
-                 <TextField
-                   id="outlined-basic"
-                   className={classes.textField}
-                   label="Mon texte"
-                   margin="normal"
-                   variant="outlined"
-                   value={this.state.textValue}
-                   onChange={(e)=> this.handleTextValueChange(e)}
+                 <InteractiveTextField
+                   classes={classes}
+                   text={this.state.textValue}
+                   setTextCallback={this.setTextValue}
+                   isButtonCleanVisible={true}
+                   bookData={null}
                  />
-
-                 <Button variant="contained" color="primary"
-                 style={{height: "40px"}}
-                 onClick={()=> this.setState({textValue: ""})}
-                 >
-                    Effacer
-                 </Button>
 
           </Grid>
 
@@ -297,7 +284,7 @@
 
     return (
       <div>
-        <Game classes={classes}/>
+        <Write classes={classes}/>
         <Footer classes={classes}/>
       </div>
     );

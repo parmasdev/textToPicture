@@ -6,7 +6,7 @@ function MyMenu(props) {
 
   const classes = props.classes;
 
-  const [anchorEl, setAnchorEl] = React.useState(0);
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -40,7 +40,7 @@ function MyMenu(props) {
         </Link>
       </MenuItem>
       <MenuItem onClick={handleClose}>
-        <Link href="text_to_picts_material_ui_CDN_V2.html">
+        <Link href="ecrire.html">
           <Icon>create</Icon>&nbsp;Ecrire une histoire
         </Link>
       </MenuItem>

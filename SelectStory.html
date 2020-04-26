@@ -244,7 +244,7 @@
 
     <Grid container direction="row" className={classes.root}>
 
-		<Grid item container justify="flex-right" xs={4}>
+		<Grid item container justify="flex-start" xs={4}>
       <MyMenu classes={classes}/>
 		</Grid>
 		<Grid item container justify="center" xs={4}>
@@ -267,7 +267,7 @@
           </Grid>
 
           {myExistingBook.map((book,index)=> (
-              <Grid item container direction="row" justify="center" alignItems="center" xs={12}>
+              <Grid item key={"S_"+index} container direction="row" justify="center" alignItems="center" xs={12}>
               <Grid item container direction="row" justify="center" alignItems="center" xs={12}>
                 &nbsp;<br/>
               </Grid>
@@ -310,7 +310,7 @@
             <Grid item container justify="flex-end" xs={1}>
                     &nbsp;
             </Grid>
-                <Grid item direction="row" justify="center" alignItems="flex-start" xs={7}
+                <Grid item container direction="row" justify="center" alignItems="flex-start" xs={7}
                 onClick={()=> document.location.href="lire.html?livre="+book.url}>
                       <br/>
                       <DisplayResult synonymArray={this.state.synonymArray} classes={classes}
