@@ -101,6 +101,9 @@ function InteractiveTextField(props) {
             } else {
               var word_nb = newWord.split("_");
               var nb=word_nb[1];
+              if(Number.isInteger(nb)) {
+                nb=1;
+              }
               newWord = newWords[0]+ "[" + word_nb[0]+"_"+(parseInt(nb)+1) + "]";
             };
 
@@ -125,6 +128,9 @@ function InteractiveTextField(props) {
           if (newWord.includes("_")) {
             var word_nb = newWord.split("_");
             var nb=word_nb[1];
+            if(Number.isInteger(nb)) {
+              nb=1;
+            }
             if (nb==1) {
               newWord = newWords[0]+ "[" + word_nb[0]+ "]";
             } else {
@@ -136,7 +142,7 @@ function InteractiveTextField(props) {
 
           var newText = sectionBeforeWord + (sectionBeforeWord==""?"":" ") + newWord + sectionAfterWord;
           setTextCallback(newText);
-          inputRef.current.focus();
+          //inputRef.current.focus();
           isSyn=false;
         };
 
@@ -191,7 +197,7 @@ function InteractiveTextField(props) {
     manageWord();
     if (typeof inputRef.current !== 'undefined') {
       inputRef.current.selectionStart = isCurrentCurPos;
-      inputRef.current.selectionEnd = isCurrentCurPos;
+      //inputRef.current.selectionEnd = isCurrentCurPos;
     }
   });
 

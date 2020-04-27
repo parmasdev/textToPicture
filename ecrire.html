@@ -157,7 +157,7 @@
     constructor(props) {
       super(props);
       this.state = {
-        textValue: "coucou[bonjour] je suis_la[la]",
+        textValue: "",
         synonymArray: {}
       };
 
@@ -253,8 +253,20 @@
             cliquer sur l&#39;example: <Link  onClick={(e)=> this.handleAddTextValue(e,"prof[professeur]")}>prof[professeur]</Link><br/>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>- Grouper</b>: Utiliser _ et l&#39;astuce synonyme,
             cliquer sur l&#39;example: <Link  onClick={(e)=> this.handleAddTextValue(e,"Le_prof_de_sport[professeur]")}>Le<b>_</b>prof<b>_</b>de<b>_</b>sport[professeur]</Link><br/>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>- Differente images</b>: Rajouter _1 (etc.) au nom du pictogramme entre [ ],
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>- Differentes images</b>: Rajouter _1 (etc.) au nom du pictogramme entre [ ],
             cliquer sur l&#39;example: <Link  onClick={(e)=> this.handleAddTextValue(e,"Le_prof_de_sport[professeur_1] Le_prof_de_sport[professeur_10] Le_prof_de_sport[professeur_11]")}>Le_prof_de_sport[professeur_1] etc.</Link><br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             Plus simple, pour les <b>Differentes images</b>, vous pouvez aussi utiliser les icones &nbsp;
+            <Chip
+              icon={<Icon>add_circle</Icon>}
+              label="Syn"
+            />
+            &nbsp;
+            <Chip
+              icon={<Icon>remove_circle</Icon>}
+              label="Syn"
+            />
+            <br/>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>- Pluriel</b>: mettre le nom du pictograme entre [ ] et ajouter X2,
             cliquer sur l&#39;example:<Link onClick={(e)=> this.handleAddTextValue(e,"profs[professeurX2]")}>profs[professeurX2]</Link>
             <br/>
