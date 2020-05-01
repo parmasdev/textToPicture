@@ -182,11 +182,8 @@
       {isLoadedFile ? (
       <Grid container justify="center" alignItems="center">
 
-        <Grid item xs={1}>
-          &nbsp;
-        </Grid>
 
-        <Grid item xs={10} container justify="center" alignItems="center">
+        <Grid item xs={12} container justify="center" alignItems="center">
         {isEditMode? (
           <TextField
             id="standard-full-width"
@@ -202,9 +199,6 @@
         )}
         </Grid>
 
-        <Grid item xs={1}>
-          &nbsp;
-        </Grid>
 
         <Grid item xs={2} container justify="center" alignItems="center">
 
@@ -222,7 +216,7 @@
 
         <Grid item xs={8} container justify="center" alignItems="center">
 
-            <img src={pagesDataJson[currentPage].picture} height="400px"/>
+            <img src={pagesDataJson[currentPage].picture} width="100%"/>
 
         </Grid>
 
@@ -623,12 +617,12 @@
 
       return (
 
-    <Grid container direction="row" justify="space-around" alignItems="stretch" className={classes.root}>
+    <Grid container justify="center" alignItems="center" className={classes.root}>
 
-		<Grid item container justify="flex-start" xs={4}>
-      <MyMenu classes={classes}/>
-		</Grid>
-		<Grid item container justify="center" xs={4}>
+    		<Grid item container justify="flex-start" xs={4}>
+          <MyMenu classes={classes}/>
+    		</Grid>
+    		<Grid item container justify="center" xs={4}>
             <Fab variant="extended" color="primary" aria-label="like" className={classes.fab}>
               <Icon>accessibility_new</Icon>
               &nbsp;
@@ -638,64 +632,62 @@
               &nbsp;<i>v{version}</i>
             </Fab>
         </Grid>
-		<Grid item container justify="flex-end" xs={4}>
-			{isLoadedFile? (
-        <div>
-        {isEditMode? (
-          <div>
-          <Tooltip title="Delete current page">
-          <IconButton color="secondary">
-            <Icon onClick={this.onClickRemoveCurrentLine}>remove_circle_outline</Icon>
-          </IconButton>
-          </Tooltip>
-          <Tooltip title="Duplicate current page">
-            <IconButton color="secondary">
-              <Icon onClick={this.onClickDuplicateCurrentLine}>add_circle_outline</Icon>
-            </IconButton>
-          </Tooltip>
-            <Tooltip title="Leave edit mode">
-              <IconButton color="secondary">
-                <Icon onClick={this.onClickExitModeEdit}>exit_to_app</Icon>
-              </IconButton>
-            </Tooltip>
-          </div>
-        ):(
-          <Tooltip title="Go to edit mode">
-          <IconButton color="secondary">
-            <Icon onClick={this.onClickGotToEditMode}>edit</Icon>
-          </IconButton>
-          </Tooltip>
-        )}
-      </div>
-			) : (
-			<Icon color="disabled">edit</Icon>
-			)}
-      {isSaved? (
-        <div></div>
-      ):(
-        <div>
-          <Tooltip title="Remove change">
-            <IconButton color="secondary">
-              <Icon onClick={this.onClickUndoModif}>delete_forever</Icon>
-              </IconButton>
-          </Tooltip>
-          <Tooltip title="Save change to file">
-            <IconButton color="primary">
-              <Icon color="primary" onClick={this.onClickSaveInFile}>save</Icon>
-            </IconButton>
-          </Tooltip>
-        </div>
-      )}
-		</Grid>
+      		<Grid item container justify="flex-end" xs={4}>
+      			{isLoadedFile? (
+              <div>
+              {isEditMode? (
+                <div>
+                <Tooltip title="Delete current page">
+                <IconButton color="secondary">
+                  <Icon onClick={this.onClickRemoveCurrentLine}>remove_circle_outline</Icon>
+                </IconButton>
+                </Tooltip>
+                <Tooltip title="Duplicate current page">
+                  <IconButton color="secondary">
+                    <Icon onClick={this.onClickDuplicateCurrentLine}>add_circle_outline</Icon>
+                  </IconButton>
+                </Tooltip>
+                  <Tooltip title="Leave edit mode">
+                    <IconButton color="secondary">
+                      <Icon onClick={this.onClickExitModeEdit}>exit_to_app</Icon>
+                    </IconButton>
+                  </Tooltip>
+                </div>
+              ):(
+                <Tooltip title="Go to edit mode">
+                <IconButton color="secondary">
+                  <Icon onClick={this.onClickGotToEditMode}>edit</Icon>
+                </IconButton>
+                </Tooltip>
+              )}
+            </div>
+      			) : (
+      			<Icon color="disabled">edit</Icon>
+      			)}
+            {isSaved? (
+              <div></div>
+            ):(
+              <div>
+                <Tooltip title="Remove change">
+                  <IconButton color="secondary">
+                    <Icon onClick={this.onClickUndoModif}>delete_forever</Icon>
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Save change to file">
+                  <IconButton color="primary">
+                    <Icon color="primary" onClick={this.onClickSaveInFile}>save</Icon>
+                  </IconButton>
+                </Tooltip>
+              </div>
+            )}
+      		</Grid>
 
           <Grid item container justify="center" xs={12}>
-
             {!this.state.isLoadedFile?"Fichier non trouvé! ("+fileName+")":""}
-
           </Grid>
 
 
-            <Grid container direction="row" justify="space-around" alignItems="stretch" item xs={5}>
+          <Grid container justify="center" alignItems="stretch" item xs={5}>
 
                 <StoryPicture isLoadedFile={isLoadedFile} pagesDataJson={pagesDataJson}
                  currentPage={currentPage}
@@ -708,18 +700,18 @@
 
           </Grid>
 
-            <Grid container direction="row" spacing={1} justify="space-around" alignItems="center" item xs={6}>
+          <Grid container spacing={1} justify="center" alignItems="center" item xs={7}>
 
-            <Grid container direction="row" spacing={1} justify="space-around" alignItems="center" item xs={12}>
+            <Grid container spacing={1} justify="center" alignItems="center" item xs={12}>
 
-              <DisplayResult synonymArray={this.state.synonymArray} classes={classes}
-               mySentence={this.state.currentPage==-1?[]:
-                 this.state.pagesDataJson[this.state.currentPage].text.length==0?
-                 []:this.state.pagesDataJson[this.state.currentPage].text.split(" ")} />
+                <DisplayResult synonymArray={this.state.synonymArray} classes={classes}
+                 mySentence={this.state.currentPage==-1?[]:
+                   this.state.pagesDataJson[this.state.currentPage].text.length==0?
+                   []:this.state.pagesDataJson[this.state.currentPage].text.split(" ")} />
 
             </Grid>
 
-              <Grid container direction="row" spacing={1} justify="space-around" alignItems="center" item xs={12}>
+            <Grid container spacing={1} justify="center" alignItems="center" item xs={12}>
 
                   {isEditMode? (
                     <InteractiveTextField
@@ -733,15 +725,11 @@
                     <div></div>
                   )}
 
-              </Grid>
-
-            </Grid>
-
-            <Grid container direction="row" justify="space-around" alignItems="stretch" item xs={1}>
-              &nbsp;
             </Grid>
 
           </Grid>
+
+      </Grid>
 
       );
     }
