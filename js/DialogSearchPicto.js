@@ -10,6 +10,10 @@ function DialogSearchPicto(props) {
       setTmpNewWordCallback, selectedWord, setSelectedWordCallback,
        manageWordCallback, ACTION } = props;
 
+  const PAGINATION_STEP=10;
+
+  const [myStep, setMyStep] = React.useState(0);
+
    const [pictoNameList, setPictoNameList] = React.useState([]);
 
    const [mySearchResult, setMySearchResult] = React.useState("");
@@ -52,12 +56,13 @@ function DialogSearchPicto(props) {
 
      if (typeof textToSearch !== 'undefined' && textToSearch!="") {
        for (var i=0;i<pictoNameList.length;i++) {
-         if (pictoNameList[i].toLowerCase().startsWith(textToSearch.toLowerCase()) ) {
-           if (nbResult<10) {
+         if (pictoNameList[i].toLowerCase().startsWith(
+                textToSearch.replace(/_/g," ").replace(/#/g,"_").toLowerCase()) ) {
+           if (nbResult>=myStep && nbResult<myStep+PAGINATION_STEP) {
               var tmpText = pictoNameList[i];
               tmpText=tmpText.replace(/_/g,"#");
               tmpText=tmpText.replace(/ /g,"_");
-              result= result+(nbResult==0?"":" ")+tmpText;
+              result= result+(nbResult==myStep?"":" ")+tmpText;
             }
             nbResult=nbResult+1;
          }
@@ -71,6 +76,7 @@ function DialogSearchPicto(props) {
 
    const handleClose = () => {
      setIsDialogSearchOpen(false);
+     setMyStep(0);
      setNbResult(0);
      setMySearchResult("");
      setSelectedWordCallback("");
@@ -91,14 +97,29 @@ function DialogSearchPicto(props) {
     <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title"
      open={isDialogSearchOpen} style={{height: "600px"}}>
         <DialogTitle id="simple-dialog-title">
-        Picto dico -
-        {nbResult>0?
-          <i>
-            {(mySearchResult.split(" ")).length}/{nbResult}
-          </i>:
-        <i>
-          0/{pictoNameList.length}
-        </i>}
+          <Grid container justify="center" alignItems="center" spacing={2}>
+            <Grid item container xs={6} justify="flex-start">
+              Picto dico
+            </Grid>
+            <Grid item container xs={6}  justify="flex-end" alignItems="center">
+              <IconButton disabled={myStep==0} aria-label="none" size="small"
+              onClick={(e)=> setMyStep(myStep-PAGINATION_STEP) }>
+                  <Icon>keyboard_arrow_left</Icon>
+              </IconButton>
+              {nbResult>0?
+                <i>
+                  {myStep+1} à {myStep+(mySearchResult.split(" ")).length} sur {nbResult}
+                </i>:
+              <i>
+                0 sur {pictoNameList.length}
+              </i>}
+              <IconButton disabled={myStep+PAGINATION_STEP>nbResult}
+              onClick={(e)=> setMyStep(myStep+PAGINATION_STEP) }
+              aria-label="none" size="small">
+                  <Icon>keyboard_arrow_right</Icon>
+              </IconButton>
+            </Grid>
+        </Grid>
         </DialogTitle>
 
         <DialogContent dividers>
@@ -112,6 +133,7 @@ function DialogSearchPicto(props) {
                       <GridListTile key={index} style={{ width: 'auto' }}
                       onClick={()=> {
                         setNbResult(0);
+                        setMyStep(0);
                         setMySearchResult("");
                         setSelectedWordCallback("");
                         manageWordCallback(ACTION.ADD,work);
@@ -142,6 +164,7 @@ function DialogSearchPicto(props) {
                 variant="outlined"
                 value={selectedWord}
                 onChange={(e)=> {
+                    setMyStep(0);
                     giveSearchResultForText(e.target.value);
                     setSelectedWordCallback(e.target.value);
                   }
@@ -152,6 +175,7 @@ function DialogSearchPicto(props) {
             <Button variant="contained" color="primary"
             disabled={selectedWord==""}
             onClick={()=> {
+                            setMyStep(0);
                             setNbResult(0);
                             setMySearchResult("");
                             setSelectedWordCallback("");
@@ -162,13 +186,16 @@ function DialogSearchPicto(props) {
             </Button>
             &nbsp;
             <Button variant="contained" color="primary"
-            disabled={selectedWord==""}
             onClick={()=> {
+                            setMyStep(0);
+                            setNbResult(0);
+                            setMySearchResult("");
+                            setSelectedWordCallback("");
                             setIsDialogSearchOpen(false);
                           }
                       }
             >
-             Cancel
+             Annuler
             </Button>
           </DialogActions>
       </Dialog>
