@@ -19,7 +19,7 @@ function TextToPicture(props) {
   const textSize = "h5"; // h1 to h9
 
   var myText = text;
-  var myTextImage = text.toLowerCase();
+  var myTextImage = text;//text.toLowerCase();
   var isPluriel = false;
 
 
