@@ -6,11 +6,11 @@ synonyms =
 existingBook =
 '['
   +'{"url":"livres/Bonne_nuit_Vendredi/livre.json","image":"livres/Bonne_nuit_Vendredi/page_00.jpg",'
-      +'"name":"bonne[bon] nuit[nuit_1] vendredi[chien]"},'
+      +'"name":"bonne[bon] nuit[nuit#1] vendredi[chien]"},'
   +'{"url":"livres/C_est_la_faute_du_chat/livre.json","image":"livres/C_est_la_faute_du_chat/page_00.jpg",'
-      +'"name":"c\'est la faute[faux] du chat[chat_4]"},'
+      +'"name":"c\'est la faute[faux] du chat[chat#4]"},'
   +'{"url":"livres/Le_renard_ruse/livre.json","image":"livres/Le_renard_ruse/page_01.jpg",'
-      +'"name":"Le renard rusé[trouver_5]"},'
+      +'"name":"Le renard rusé[trouver#5]"},'
   +'{"url":"livres/Les_felins/livre.json","image":"livres/Les_felins/page_01.jpg",'
-      +'"name":"Les félins[lion_1X2]"}'
+      +'"name":"Les félins[lion#1X2]"}'
   +']';

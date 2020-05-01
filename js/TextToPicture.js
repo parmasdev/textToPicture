@@ -22,6 +22,7 @@ function TextToPicture(props) {
   var myTextImage = text.toLowerCase();
   var isPluriel = false;
 
+
   if (myText.includes("[") && myText.endsWith("]")) {
     var myNewTextArrray = myText.split("[");
     myText = myNewTextArrray[0];
@@ -38,6 +39,9 @@ function TextToPicture(props) {
   if (synonymArray.hasOwnProperty(myTextImage)) {
     myTextImage = synonymArray[myTextImage];
   }
+
+  myTextImage = myTextImage.replace(/_/g," ");
+  myTextImage = myTextImage.replace(/#/g,"_");
 
   return (
 

@@ -9,7 +9,8 @@ function InteractiveTextField(props) {
     RESETPOS: "resetPos",
     ADDSYN: "addSyn",
     UPSYN: "upSyn",
-    DOWNSYN: "downSyn"
+    DOWNSYN: "downSyn",
+    ADD: "add"
   }
 
   const classes = props.classes;
@@ -21,11 +22,16 @@ function InteractiveTextField(props) {
   const inputRef = React.useRef();
 
   const [isWordSelected, setIsWordSelected] = React.useState(false);
+  const [selectedWord, setSelectedWord] = React.useState("");
+
   const [isSyn, setIsSyn] = React.useState(false);
   const [isSyndown, setIsSyndown] = React.useState(false);
   const [isSynUp, setIsSynUp] = React.useState(false);
 
   const [isCurrentCurPos, setIsCurrentCurPos] = React.useState(text.length);
+
+  const [isDialogSearchOpen, setIsDialogSearchOpen] = React.useState(false);
+
 
   //////////////////////////////////////////////////////////
   // selected word
@@ -41,26 +47,26 @@ function InteractiveTextField(props) {
 
   var words = text.split(' ');
 
-  if (typeof optionalText !== 'undefined') {
+  if (typeof optionalText !== 'undefined' && action != ACTION.ADD) {
     words = optionalText.split(' ');
   }
 
   var currentSize = 0;
   var sectionBeforeWord="";
   var sectionAfterWord="";
-  var manageWord = "";
+  var tmpSelectedManageWord = "";
   var isSyn = false;
 
   for (var i=0;i<words.length;i++) {
     var word=words[i];
     currentSize = currentSize + word.length+1;
-    if (currentSize>curPos && manageWord=="") {
-      manageWord = word;
-      if (manageWord.includes("[")) {
+    if (currentSize>curPos && tmpSelectedManageWord=="") {
+      tmpSelectedManageWord = word;
+      if (tmpSelectedManageWord.includes("[")) {
         isSyn = true;
       }
     } else {
-      if (manageWord=="") {
+      if (tmpSelectedManageWord=="") {
           sectionBeforeWord = sectionBeforeWord + (sectionBeforeWord==""?"":" ")+word;
       } else {
           sectionAfterWord = sectionAfterWord + " " + word;
@@ -68,43 +74,69 @@ function InteractiveTextField(props) {
     }
   }
 
-  if (manageWord=="" && !text.endsWith(" ")) {
-    manageWord=words[words.length];
+  if (tmpSelectedManageWord=="" && !text.endsWith(" ")) {
+    tmpSelectedManageWord=words[words.length];
   }
 
-  console.log("Avant mot =>> "+sectionBeforeWord);
-  console.log("Le mot =>> "+manageWord);
-  console.log("Apres mot =>> "+sectionAfterWord);
+  //console.log("Avant mot =>> "+sectionBeforeWord);
+  //console.log("Le mot =>> "+tmpSelectedManageWord);
+  //console.log("Apres mot =>> "+sectionAfterWord);
 
 
-    if (typeof manageWord !== 'undefined') {
+  if (typeof inputRef.current !== 'undefined' && action==ACTION.RESETPOS) {
+
+    var newWords = (typeof tmpSelectedManageWord !== 'undefined'?
+                              tmpSelectedManageWord.split("["):[]);
+
+    if (newWords.length>1) {
+      var newWord = newWords[1];
+      newWord = newWord.replace("]","");
+      setSelectedWord(newWord);
+    } else {
+      setSelectedWord(tmpSelectedManageWord);
+    }
+  }
+
+  if (action == ACTION.ADD) {
+
+    var newWords = (typeof tmpSelectedManageWord !== 'undefined'?
+                              tmpSelectedManageWord.split("["):[]);
+
+    if (newWords.length>1) {
+      optionalText = newWords[0]+ "[" + optionalText+"]";
+    }
+
+    var newText = sectionBeforeWord + (sectionBeforeWord==""?"":" ")
+    + optionalText + sectionAfterWord;
+    setTextCallback(newText);
+  }
+
+    if (typeof tmpSelectedManageWord !== 'undefined') {
 
       if (action == ACTION.ADDSYN) {
-        var newText = sectionBeforeWord + (sectionBeforeWord==""?"":" ") + manageWord
-              +"["+manageWord+"]" + sectionAfterWord;
+        var newText = sectionBeforeWord + (sectionBeforeWord==""?"":" ") + tmpSelectedManageWord
+              +"["+tmpSelectedManageWord+"]" + sectionAfterWord;
         setTextCallback(newText);
         }
 
         if (action == ACTION.UPSYN) {
 
-          var newWords = manageWord.split("[");
+          var newWords = tmpSelectedManageWord.split("[");
 
           if (newWords.length>0) {
 
             var newWord = newWords[1];
             newWord = newWord.replace("]","");
 
-            console.log("newWord ==> ",newWord);
-
-            if (!newWord.includes("_")) {
-              newWord = newWords[0]+ "[" + newWord+"_1]";
+            if (!newWord.includes("#")) {
+              newWord = newWords[0]+ "[" + newWord+"#1]";
             } else {
-              var word_nb = newWord.split("_");
+              var word_nb = newWord.split("#");
               var nb=word_nb[1];
               if(Number.isInteger(nb)) {
                 nb=1;
               }
-              newWord = newWords[0]+ "[" + word_nb[0]+"_"+(parseInt(nb)+1) + "]";
+              newWord = newWords[0]+ "[" + word_nb[0]+"#"+(parseInt(nb)+1) + "]";
             };
 
             var newText = sectionBeforeWord + (sectionBeforeWord==""?"":" ") + newWord + sectionAfterWord;
@@ -116,17 +148,15 @@ function InteractiveTextField(props) {
 
       if (action == ACTION.DOWNSYN) {
 
-        var newWords = manageWord.split("[");
+        var newWords = tmpSelectedManageWord.split("[");
 
         if (newWords.length>0) {
 
           var newWord = newWords[1];
           newWord = newWord.replace("]","");
 
-          console.log("newWord ==> ",newWord);
-
-          if (newWord.includes("_")) {
-            var word_nb = newWord.split("_");
+          if (newWord.includes("#")) {
+            var word_nb = newWord.split("#");
             var nb=word_nb[1];
             if(Number.isInteger(nb)) {
               nb=1;
@@ -134,7 +164,7 @@ function InteractiveTextField(props) {
             if (nb==1) {
               newWord = newWords[0]+ "[" + word_nb[0]+ "]";
             } else {
-              newWord = newWords[0]+ "[" + word_nb[0]+"_"+(parseInt(nb)-1) + "]";
+              newWord = newWords[0]+ "[" + word_nb[0]+"#"+(parseInt(nb)-1) + "]";
             }
           } else {
             newWord = newWords[0];
@@ -188,12 +218,11 @@ function InteractiveTextField(props) {
   //////////////////////////////////////////////////////////
   // onKeyPressed
   const onKeyPressed = function(event) {
-    console.log("InteractiveTextField::onKeyPressed");
+    //console.log("InteractiveTextField::onKeyPressed");
     manageWord(ACTION.RESETPOS);
   };
 
   React.useEffect(() => {
-    console.log("define !!!");
     manageWord();
     if (typeof inputRef.current !== 'undefined') {
       inputRef.current.selectionStart = isCurrentCurPos;
@@ -201,10 +230,13 @@ function InteractiveTextField(props) {
     }
   });
 
+
+  //////////////////////////////////////////////////////////
+  // RENDER
+  //////////////////////////////////////////////////////////
   return (
 
     <Grid container justify="center" alignItems="center">
-
       <TextField
         id="outlined-basic"
         fullWidth
@@ -229,6 +261,12 @@ function InteractiveTextField(props) {
       </Button>
     }
     &nbsp;
+  <Chip
+      icon={<Icon>search</Icon>}
+      label="Picto dico"
+      onClick={(e) => setIsDialogSearchOpen(true)}
+    />
+    &nbsp;
     {isSyn &&
       <Chip
         icon={<Icon>add_circle</Icon>}
@@ -250,6 +288,15 @@ function InteractiveTextField(props) {
         onClick={(e) => manageWord(ACTION.DOWNSYN)}
       />
     }
+
+    <DialogSearchPicto classes={classes}
+     setIsDialogSearchOpen={setIsDialogSearchOpen}
+      isDialogSearchOpen={isDialogSearchOpen}
+      selectedWord={selectedWord}
+      setSelectedWordCallback={setSelectedWord}
+      ACTION={ACTION}
+      manageWordCallback={manageWord}/>
+
     </Grid>
 
 )

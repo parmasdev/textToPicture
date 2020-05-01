@@ -20,3 +20,12 @@ Start
 StartServer.bat
 
 go to  http://127.0.0.1:8080
+
+
+(
+Note:
+Get list of picto to json array
+CMD/U
+dir /s /b *.png > 00_listOfPng.txt
+https://www.convertcsv.com/csv-to-json.htm
+  )
