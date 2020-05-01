@@ -1,3 +1,5 @@
+version = "1.2.0";
+
 synonyms =
 '['
 +'{"imageName":"ecole","group":"lieu","synonym":"l\'ecole"}'
