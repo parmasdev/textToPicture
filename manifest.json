@@ -3,43 +3,43 @@
   "name": "Text to picture - Ecrite, lire, jouer...",
   "icons": [
     {
-      "src": "element4l-icon_32.png",
+      "src": "icons/element4l-icon_32.png",
       "sizes": "32x32",
       "type": "image/png",
       "density": 0.70
     },
     {
-      "src": "telement4l-icon_48.png",
+      "src": "icons/etelement4l-icon_48.png",
       "sizes": "48x48",
       "type": "image/png",
       "density": 1.0
     },
     {
-      "src": "element4l-icon_72.png",
+      "src": "icons/element4l-icon_72.png",
       "sizes": "72x72",
       "type": "image/png",
       "density": 1.5
     },
     {
-      "src": "element4l-icon_96.png",
+      "src": "icons/element4l-icon_96.png",
       "sizes": "96x96",
       "type": "image/png",
       "density": 2.0
     },
     {
-      "src": "element4l-icon_128.png",
+      "src": "icons/element4l-icon_128.png",
       "sizes": "128x128",
       "type": "image/png",
       "density": 2.7
     },
     {
-      "src": "touch-icon-512.png",
+      "src": "icons/touch-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "density": 10.5
     }
   ],
-  "start_url": "/index.html",
-  "display": "standalone",
-  "orientation": "portrait"
+  "start_url": "SelectStory.html",
+  "display": "fullscreen",
+  "orientation": "landscape"
 }
