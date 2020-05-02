@@ -216,7 +216,8 @@
 
         <Grid item xs={8} container justify="center" alignItems="center">
 
-            <img src={pagesDataJson[currentPage].picture} width="100%"/>
+            <img onClick={(event)=> onClickNextPage(event)}
+            src={pagesDataJson[currentPage].picture} width="100%"/>
 
         </Grid>
 
@@ -224,7 +225,8 @@
         <Grid item xs={2} container justify="center" alignItems="center">
 
             {currentPage+1!=pagesDataJson.length? (
-            <Fab color="secondary" aria-label="edit" className={classes.fab} onClick={(event)=> onClickNextPage(event)}>
+            <Fab color="secondary" aria-label="edit" className={classes.fab}
+            onClick={(event)=> onClickNextPage(event)}>
               <Icon>arrow_forward_ios</Icon>
             </Fab>
             ):(
