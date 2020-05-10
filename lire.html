@@ -169,9 +169,10 @@
     const onClickNextPage = props.onClickNextPage;
     const onClickPreviousPage = props.onClickPreviousPage;
     const handlePageNumberChange = props.handlePageNumberChange;
-    const handlePictureUrlValueChange = props.handlePictureUrlValueChange;
+    const onClickEditNextImage = props.onClickEditNextImage;
 
-    const myList = Array.from(Array(props.pagesDataJson.length).keys());
+    const myList = (props.pagesDataJson.story===undefined?[]:
+      Array.from(Array(props.pagesDataJson.story.length).keys()));
 
     const options = myList.map(v => (
         <MenuItem key={v+1} value={v+1}>{v+1}</MenuItem>
@@ -183,18 +184,41 @@
       <Grid container justify="center" alignItems="center">
 
 
-        <Grid item xs={12} container justify="center" alignItems="center">
+      <Grid item xs={3} container justify="flex-end" alignItems="center">
+      {isEditMode? (
+        <div>
+        <Tooltip title="Modifier l'image - essayer l'image precedante.">
+        <IconButton color="secondary"
+        disabled={parseInt(pagesDataJson.story[currentPage].pictureStringIndex,10)-1<1}>
+          <Icon onClick={(e)=> onClickEditNextImage(-1)}>remove_circle</Icon>
+        </IconButton>
+        </Tooltip>
+        </div>
+      ) : (
+        <div></div>
+      )}
+      </Grid>
+       <Grid item xs={6} container justify="center" alignItems="center">
         {isEditMode? (
-          <TextField
-            id="standard-full-width"
-            fullWidth
-            label="Modifie image"
-            margin="normal"
-            variant="outlined"
-            value={pagesDataJson[currentPage].picture}
-            onChange={(e)=> handlePictureUrlValueChange(e)}
-          />
+          <div>
+            Image choisie:&nbsp;
+            {pagesDataJson.story[currentPage].pictureStringIndex}
+            &nbsp;(sur {pagesDataJson.pictureNb} images)
+          </div>
         ) : (
+          <div></div>
+        )}
+        </Grid>
+        <Grid item xs={3} container justify="flex-start" alignItems="center">
+        {isEditMode? (
+          <Tooltip title="Modifier l'image - essayer l'image suivante.">
+            <IconButton color="secondary"
+            disabled={parseInt(pagesDataJson.story[currentPage].pictureStringIndex,10)+1
+                                  >pagesDataJson.pictureNb}>
+              <Icon onClick={(e)=> onClickEditNextImage(1)}>add_circle</Icon>
+            </IconButton>
+          </Tooltip>
+          ) : (
           <div></div>
         )}
         </Grid>
@@ -217,14 +241,17 @@
         <Grid item xs={8} container justify="center" alignItems="center">
 
             <img onClick={(event)=> onClickNextPage(event)}
-            src={pagesDataJson[currentPage].picture} width="100%"/>
+            src={pagesDataJson.picturePath +
+              pagesDataJson.story[currentPage].pictureStringIndex +
+            pagesDataJson.pictureExt}
+             width="100%"/>
 
         </Grid>
 
 
         <Grid item xs={2} container justify="center" alignItems="center">
 
-            {currentPage+1!=pagesDataJson.length? (
+            {currentPage+1!=pagesDataJson.story.length? (
             <Fab color="secondary" aria-label="edit" className={classes.fab}
             onClick={(event)=> onClickNextPage(event)}>
               <Icon>arrow_forward_ios</Icon>
@@ -310,8 +337,8 @@
         isEditMode: false,
         isSaved: true,
         currentPage: -1,
-        pagesDataJson: [],
-        pagesDataJsonBackup: [],
+        pagesDataJson: {},
+        pagesDataJsonBackup: {},
         synonymArray: {}
       };
 
@@ -365,9 +392,9 @@
       this.onClickSaveInFile = this.onClickSaveInFile.bind(this);
       this.onClickUndoModif = this.onClickUndoModif.bind(this);
       this.handlePageNumberChange = this.handlePageNumberChange.bind(this);
-      this.handlePictureUrlValueChange = this.handlePictureUrlValueChange.bind(this);
       this.onClickDuplicateCurrentLine = this.onClickDuplicateCurrentLine.bind(this);
       this.onClickRemoveCurrentLine = this.onClickRemoveCurrentLine.bind(this);
+      this.onClickEditNextImage = this.onClickEditNextImage.bind(this);
 
 
       // load synonym
@@ -398,7 +425,7 @@
     // ReadStory::onClickNextPAge
     ////////////////////////////////////////////////////////////////////////////
     onClickNextPage = (evt) => {
-      if (this.state.currentPage+1 != this.state.pagesDataJson.length) {
+      if (this.state.currentPage+1 != this.state.pagesDataJson.story.length) {
         this.setState({currentPage: this.state.currentPage+1});
       }
     }
@@ -432,15 +459,16 @@
     onClickDuplicateCurrentLine = (evt) => {
 
       // init bck part
-      if (this.state.pagesDataJsonBackup.length==0) {
+      if (Object.keys(this.state.pagesDataJsonBackup).length==0) {
         var pagesDataJsonBackupTmp = JSON.parse(JSON.stringify(this.state.pagesDataJson));
         this.setState({ pagesDataJsonBackup: pagesDataJsonBackupTmp});
       }
 
       var pagesDataJsonTmp = this.state.pagesDataJson;
 
-      pagesDataJsonTmp.splice(this.state.currentPage+1, 0,
-          {picture: pagesDataJsonTmp[this.state.currentPage].picture, text: "NOUVELLE_LIGNE"}
+      pagesDataJsonTmp.story.splice(this.state.currentPage+1, 0,
+          {pictureStringIndex: pagesDataJsonTmp.story[this.state.currentPage].pictureStringIndex,
+           text: "NOUVELLE_LIGNE"}
       );
 
       this.setState({ pagesDataJson: pagesDataJsonTmp});
@@ -460,14 +488,14 @@
     onClickRemoveCurrentLine = (evt) => {
 
       // init bck part
-      if (this.state.pagesDataJsonBackup.length==0) {
+      if (Object.keys(this.state.pagesDataJsonBackup).length==0) {
         var pagesDataJsonBackupTmp = JSON.parse(JSON.stringify(this.state.pagesDataJson));
         this.setState({ pagesDataJsonBackup: pagesDataJsonBackupTmp});
       }
 
       var pagesDataJsonTmp = this.state.pagesDataJson;
 
-      pagesDataJsonTmp.splice(this.state.currentPage, 1);
+      pagesDataJsonTmp.story.splice(this.state.currentPage, 1);
 
       this.setState({ pagesDataJson: pagesDataJsonTmp});
       this.setState({ currentPage: this.state.currentPage-1});
@@ -488,9 +516,10 @@
 
       if (this.state.isLocalFile) {
       // save in local repository
-      var blob = new Blob([JSON.stringify(this.state.pagesDataJson, null,4)], {type: "text/plain;charset=utf-8"});
+      var blob = new Blob([JSON.stringify(this.state.pagesDataJson, null,4)],
+       {type: "text/plain;charset=utf-8"});
       saveAs(blob, this.state.fileName);
-      this.setState({ pagesDataJsonBackup: [] });
+      this.setState({ pagesDataJsonBackup: {} });
       this.setState({ isSaved: true });
 
       } else {
@@ -527,7 +556,7 @@
           function(error,result) {
             console.log("error: ", error);
             console.log("result: ", result);
-            scope.setState({ pagesDataJsonBackup: [] });
+            scope.setState({ pagesDataJsonBackup: {} });
             scope.setState({ isSaved: true });
           }
         );
@@ -541,7 +570,7 @@
     onClickUndoModif = (evt) => {
 
       this.setState({ pagesDataJson: this.state.pagesDataJsonBackup });
-      this.setState({ pagesDataJsonBackup: [] });
+      this.setState({ pagesDataJsonBackup: {} });
       this.setState({ isSaved: true });
 
     }
@@ -554,43 +583,54 @@
     }
 
     ////////////////////////////////////////////////////////////////////////////
+    // ReadStory::onClickEditNextImage
+    ////////////////////////////////////////////////////////////////////////////
+    onClickEditNextImage = (step) => {
+
+      var pictureStringIndex =
+        this.state.pagesDataJson.story[this.state.currentPage].pictureStringIndex;
+
+        if (Number.isInteger(parseInt(pictureStringIndex,10)) &&
+        parseInt(pictureStringIndex,10)+step >0
+      ) {
+
+          pictureStringIndex = parseInt(pictureStringIndex,10)+step;
+
+          pictureStringIndex = ("0"+ pictureStringIndex);
+          pictureStringIndex = pictureStringIndex.slice(pictureStringIndex.length-2,
+                                                        pictureStringIndex.length);
+
+          if (Object.keys(this.state.pagesDataJsonBackup).length==0) {
+            var pagesDataJsonBackupTmp = JSON.parse(JSON.stringify(this.state.pagesDataJson));
+            this.setState({ pagesDataJsonBackup: pagesDataJsonBackupTmp});
+          }
+
+          var pagesDataJsonTmp = this.state.pagesDataJson;
+          pagesDataJsonTmp.story[this.state.currentPage].pictureStringIndex=pictureStringIndex;
+          this.setState({ pagesDataJson: pagesDataJsonTmp});
+
+          if (JSON.stringify(this.state.pagesDataJsonBackup)==JSON.stringify(this.state.pagesDataJson)) {
+            this.setState({ isSaved: true });
+          } else {
+             this.setState({ isSaved: false });
+          }
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
     // ReadStory::handleTextValueChange
     ////////////////////////////////////////////////////////////////////////////
 
     handleTextValueChange = (newText) => {
 
       // init bck part
-      if (this.state.pagesDataJsonBackup.length==0) {
+      if (Object.keys(this.state.pagesDataJsonBackup).length==0) {
         var pagesDataJsonBackupTmp = JSON.parse(JSON.stringify(this.state.pagesDataJson));
         this.setState({ pagesDataJsonBackup: pagesDataJsonBackupTmp});
       }
 
       var pagesDataJsonTmp = this.state.pagesDataJson;
-      pagesDataJsonTmp[this.state.currentPage].text=newText;
-      this.setState({ pagesDataJson: pagesDataJsonTmp});
-
-      if (JSON.stringify(this.state.pagesDataJsonBackup)==JSON.stringify(this.state.pagesDataJson)) {
-        this.setState({ isSaved: true });
-      } else {
-        this.setState({ isSaved: false });
-      }
-
-    };
-
-    ////////////////////////////////////////////////////////////////////////////
-    // ReadStory::handleTextValueChange
-    ////////////////////////////////////////////////////////////////////////////
-
-    handlePictureUrlValueChange = (event) => {
-
-      // init bck part
-      if (this.state.pagesDataJsonBackup.length==0) {
-        var pagesDataJsonBackupTmp = JSON.parse(JSON.stringify(this.state.pagesDataJson));
-        this.setState({ pagesDataJsonBackup: pagesDataJsonBackupTmp});
-      }
-
-      var pagesDataJsonTmp = this.state.pagesDataJson;
-      pagesDataJsonTmp[this.state.currentPage].picture=event.target.value;
+      pagesDataJsonTmp.story[this.state.currentPage].text=newText;
       this.setState({ pagesDataJson: pagesDataJsonTmp});
 
       if (JSON.stringify(this.state.pagesDataJsonBackup)==JSON.stringify(this.state.pagesDataJson)) {
@@ -695,10 +735,11 @@
                  currentPage={currentPage}
                  classes={classes}
                  isEditMode={isEditMode}
-                 handlePictureUrlValueChange={(e)=> this.handlePictureUrlValueChange(e)}
                  handlePageNumberChange={(e)=> this.handlePageNumberChange(e)}
                  onClickPreviousPage={(e)=> this.onClickPreviousPage(e)}
-                 onClickNextPage={(e)=> this.onClickNextPage(e)}/>
+                 onClickNextPage={(e)=> this.onClickNextPage(e)}
+                 onClickEditNextImage={this.onClickEditNextImage}
+                 />
 
           </Grid>
 
@@ -708,8 +749,8 @@
 
                 <DisplayResult synonymArray={this.state.synonymArray} classes={classes}
                  mySentence={this.state.currentPage==-1?[]:
-                   this.state.pagesDataJson[this.state.currentPage].text.length==0?
-                   []:this.state.pagesDataJson[this.state.currentPage].text.split(" ")} />
+                   this.state.pagesDataJson.story[this.state.currentPage].text.length==0?
+                   []:this.state.pagesDataJson.story[this.state.currentPage].text.split(" ")} />
 
             </Grid>
 
@@ -718,10 +759,10 @@
                   {isEditMode? (
                     <InteractiveTextField
                       classes={classes}
-                      text={this.state.pagesDataJson[this.state.currentPage].text}
+                      text={this.state.pagesDataJson.story[this.state.currentPage].text}
                       setTextCallback={this.handleTextValueChange}
                       isButtonCleanVisible={false}
-                      bookData={this.state.pagesDataJson}
+                      bookData={this.state.pagesDataJson.story}
                     />
                   ) : (
                     <div></div>

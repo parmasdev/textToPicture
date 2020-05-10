@@ -1,4 +1,9 @@
-[{
-  "picture": "livres\\Le_renard_ruse\\page_01.jpg",
-  "text": "ICI LE TEXTE"
-}]
+{
+  "picturePath": "livres\\Le_renard_ruse\\page_",
+  "pictureNb": 16,
+  "pictureExt": ".jpg",
+  "story": [{
+    "pictureStringIndex": "01",
+    "text": "ICI LE TEXTE"
+  }]
+}

@@ -183,7 +183,11 @@
 
           <Grid item xs={8} container justify="center" alignItems="center">
 
-              <img src={pagesDataJson[currentPage].picture} width="100%"
+              <img
+              src={pagesDataJson.picturePath +
+                pagesDataJson.story[currentPage].pictureStringIndex +
+              pagesDataJson.pictureExt}
+                  width="100%"
                 onClick={(event)=> onClickShowStory(event)}
               />
 
@@ -192,7 +196,7 @@
 
         <Grid item xs={2} container justify="center" alignItems="center">
 
-          {currentPage+1!=pagesDataJson.length? (
+          {currentPage+1!=pagesDataJson.story.length? (
           <Fab color="secondary" aria-label="edit" className={classes.fab} onClick={(event)=> onClickNextPage(event)}>
             <Icon>arrow_forward_ios</Icon>
           </Fab>
@@ -205,7 +209,7 @@
         </Grid>
 
         <Grid item xs={12} container justify="center" alignItems="center">
-              ({currentPage+1}/{pagesDataJson.length})
+              ({currentPage+1}/{pagesDataJson.story.length})
         </Grid>
 
       </Grid>
@@ -452,7 +456,7 @@
         fileName: "NONE",
         isLoadedFile: false,
         currentPage: -1,
-        pagesDataJson: [],
+        pagesDataJson: {},
         synonymArray: {},
         isDialogDisplaySentenceOpen: false,
         ramdomWords: [],
@@ -666,7 +670,7 @@
     // Game::onClickNextPAge
     ////////////////////////////////////////////////////////////////////////////
     onClickNextPage = (evt) => {
-      if (this.state.currentPage+1 != this.state.pagesDataJson.length) {
+      if (this.state.currentPage+1 != this.state.pagesDataJson.story.length) {
         this.setState({currentPage: this.state.currentPage+1});
       }
     }
@@ -694,7 +698,7 @@
 
       this.setState({isDialogDisplaySentenceOpen: true});
 
-      var originalText = this.state.pagesDataJson[this.state.currentPage].text.split(" ");
+      var originalText = this.state.pagesDataJson.story[this.state.currentPage].text.split(" ");
       var ramdomText = [];
       var myLength = originalText.length;
 
@@ -736,7 +740,7 @@
 
             if(this.state.ramdomWords.length==0) {
 
-              var myWordArray = this.state.pagesDataJson[this.state.currentPage].text.split(" ");
+              var myWordArray = this.state.pagesDataJson.story[this.state.currentPage].text.split(" ");
 
               var isWin=true;
               for (var i=0; i< myWordArray.length; i++) {
@@ -746,7 +750,7 @@
               }
 
               if (isWin) {
-                if (this.state.currentPage+1 != this.state.pagesDataJson.length) {
+                if (this.state.currentPage+1 != this.state.pagesDataJson.story.length) {
                   this.setState({currentPage: this.state.currentPage+1});
                 } else {
 					// Reset game - TODO
@@ -781,10 +785,13 @@
 
         <DialogDisplaySentence synonymArray={this.state.synonymArray} classes={classes}
          handleClose={handleClose} open={this.state.isDialogDisplaySentenceOpen}
-        mySentence={this.state.pagesDataJson.length!=0 ?this.state.pagesDataJson[this.state.currentPage].text:""}
+        mySentence={(this.state.pagesDataJson.story===undefined?"":
+                      this.state.pagesDataJson.story.length!=0 ?
+                      this.state.pagesDataJson.story[this.state.currentPage].text:"")}
         isWinDialog={this.state.ramdomWords==0}
         sentenceToEvaluate={this.state.resultWords}
-		isLastPage={this.state.currentPage+1==this.state.pagesDataJson.length}
+		isLastPage={(this.state.pagesDataJson.story===undefined?false:
+    this.state.currentPage+1==this.state.pagesDataJson.story.length)}
         />
 
         <Grid item xs={1}>

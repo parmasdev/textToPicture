@@ -1,4 +1,9 @@
-[{
-  "picture": "livres\\Les_felins\\page_01.jpg",
-  "text": "ICI LE TEXTE"
-}]
+{
+  "picturePath": "livres\\Les_felins\\page_",
+  "pictureNb": 12,
+  "pictureExt": ".jpg",
+  "story": [{
+    "pictureStringIndex": "01",
+    "text": "ICI LE TEXTE"
+  }]
+}
